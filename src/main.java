@@ -24,7 +24,7 @@ public class main extends JFrame{
             public void actionPerformed(ActionEvent e) {
                String utilizador =  tfFirstName.getText();
                String password = String.valueOf(PasswordField.getPassword());
-                String url = "jdbc:sqlserver://DESKTOP-UJ26N4K\\SQLEXPRESS;databaseName=ZurrapaFilial;integratedSecurity=true";
+                String url = "jdbc:sqlserver://NIMOUH-BEAST\\SQLEXPRESS;databaseName=ZurrapaFilial;integratedSecurity=true";
                 try {
                     Connection connection = DriverManager.getConnection(url);
                     String sql = "Select Username, Palavra_passe from TblEmpregado Where Username = ? and Palavra_Passe= ?";
