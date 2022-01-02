@@ -46,8 +46,8 @@ public class Pedido extends JFrame {
                 p.setPreco_compra(rs.getDouble("Preco_Compra"));
                 pr.add(p);
             }
-            for (int i = 0; i < pr.size(); i++) {
-                Produtos.addItem(pr.get(i).getNome());
+            for (Produto produto : pr) {
+                Produtos.addItem(produto.getNome());
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e, "Message", JOptionPane.ERROR_MESSAGE);
@@ -91,7 +91,7 @@ public class Pedido extends JFrame {
 
             if (Produtos.getSelectedItem().equals(p.getNome())) {
                 preco[0] = p.getPreco_venda() * Integer.parseInt(tfQuantidade.getText());
-                Preço.setText("Preço " + String.valueOf(preco[0]) + "€");
+                Preço.setText("Preço " + preco[0] + "€");
             }
         }
     }
@@ -109,7 +109,7 @@ public class Pedido extends JFrame {
                 data[1][i] = rs.getInt("IDProduto");
                 data[2][i] = rs.getInt("Quantidade_Pedida");
                 data[3][i] = rs.getInt("Quantidade_Servida");
-                ultimoId = i + 1;
+                ultimoId = rs.getInt("IDPedido") + 1;
                 i++;
             }
 
