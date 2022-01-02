@@ -1,5 +1,6 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class Conectar {
     public static Connection getCon() {
@@ -17,7 +18,7 @@ public class Conectar {
                 String url = "jdbc:sqlserver://DESKTOP-UJ26N4k\\SQLEXPRESS;databaseName=ZurrapaSede;integratedSecurity=true";
                 Connection connection = DriverManager.getConnection(url);
                 return connection;
-            } catch (Exception e) {
+            } catch (SQLException e) {
                 return null;
             }
     }

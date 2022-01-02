@@ -2,6 +2,11 @@ public class Empregado {
     private int id;
     private String nome;
 
+    public Empregado(int id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
     public int getId() {
         return id;
     }
@@ -25,8 +30,5 @@ public class Empregado {
         this.nome = nome;
     }
 
-    public Empregado(int id, String nome){
-        this.id = id;
-        this.nome = nome;
-    }
+
 }
