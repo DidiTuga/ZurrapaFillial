@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class Hub extends JFrame {
@@ -16,18 +17,21 @@ public class Hub extends JFrame {
         setContentPane(Painel);
         setTitle("HUB");
         setSize(400, 300);
-        setResizable(false);
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        nEmpregado.setText("Olá " + emp.getNome() + ".");
+        setResizable(false); //Assim nao se pode mudar o tamanho
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //clicar no x para fechar
 
-        bPedido.addActionListener(new ActionListener() { //Criar Pedido
+
+        nEmpregado.setText("Bem-vindo " + emp.getNome() + ".");
+
+        //Criar Pedido
+        bPedido.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 setVisible(false);
                 try {
                     Pedido pedido = new Pedido(emp);
                     pedido.setLocationRelativeTo(null);
                 } catch (Exception ex) {
-                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(null, ex, "MessageP", JOptionPane.ERROR_MESSAGE);
                 }
 
             }

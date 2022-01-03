@@ -1,38 +1,42 @@
+
+
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+
 
 public class Pedido extends JFrame {
     private JPanel iPainel;
-    private JTable Pedidos;
     private JLabel Quantidade;
     private JLabel Produto;
     private JComboBox Produtos;
     private JButton bAdicionar;
     private JLabel Preço;
     private JLabel nEmpregado;
-    private JScrollPane Tabela;
     private JFormattedTextField tfQuantidade;
+    private JButton bSair;
+
+    private static int ultimoId = 1;
 
     public Pedido(Empregado emp) {
         final double[] preco = {0};
-        int ultimoId = 0;
+
         ArrayList<Produto> pr = new ArrayList<>();
         setContentPane(iPainel);
         setTitle("Criar Pedido");
-        setSize(700, 450);
-        setResizable(true);
+        setSize(450, 450);
+        setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //Escrever  nas labels
         nEmpregado.setText("Olá " + emp.getNome() + ".");
         Quantidade.setText("Quantidade");
         Produto.setText("Produto");
-        atualizarTabela(ultimoId);
-        try{
+
+        try {
             //ir buscar os produtos para os adicionar no combobox
             String sql = "SELECT * From TblProduto";
             PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
@@ -50,17 +54,16 @@ public class Pedido extends JFrame {
                 Produtos.addItem(produto.getNome());
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e, "Message", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e, "Message3", JOptionPane.ERROR_MESSAGE);
         }
         atualizaPreco(pr, preco);
         setVisible(true);
         //quando alteram o valor da quantidade
         tfQuantidade.addActionListener(new ActionListener() {
-                                           public void actionPerformed(ActionEvent e) {
-                                               atualizaPreco(pr, preco);
-                                           }
-                                       }
-        );
+            public void actionPerformed(ActionEvent e) {
+                atualizaPreco(pr, preco);
+            }
+        });
         //quando escolhem um produto
         Produtos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -70,16 +73,40 @@ public class Pedido extends JFrame {
         //quando clicam no adicionar pedido
         bAdicionar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
                 for (Produto p : pr) {
 
                     if (Produtos.getSelectedItem().equals(p.getNome())) {
-                        Funcoes.setDataorDelete("", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal) " +
-                                "VALUES(" + ultimoId+", " + 0 + ", " + emp.getId() + ", "+ 2 + ")" );
-                        Funcoes.setDataorDelete("", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida) " +
-                                "VALUES(" + ultimoId+", " + p.getId() + ", " + Integer.parseInt(tfQuantidade.getText()) + ", "+ 0 + ")");
-                        atualizarTabela(ultimoId);
+
+                        if (Funcoes.verStock(Integer.parseInt(tfQuantidade.getText()), p)) { //VERIFICA SE TEM EM STOCK
+                            atualizaID();
+                            System.out.println(ultimoId + ", " + emp.getId() + "," + login.local);
+                            Funcoes.setDataorDelete("Pedido Colocado com sucesso!", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
+                                    "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + login.local + ");");
+                            Funcoes.setDataorDelete("ContuedoPedido Colocado com sucesso!", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida)\n" +
+                                    "VALUES(" + ultimoId + ", " + p.getId() + ", " + Integer.parseInt(tfQuantidade.getText()) + ", " + Integer.parseInt(tfQuantidade.getText()) + ");");
+
+                        }
+
+                        String pagar = String.format("São: %.2f€", preco[0]);
+                        JOptionPane.showMessageDialog(null, pagar);
+                        setVisible(false);
+                        Hub inicio = new Hub(emp);
+                        setVisible(false);
+                        inicio.setLocationRelativeTo(null);
+                        inicio.setVisible(true);
+
                     }
                 }
+
+            }
+        });
+        bSair.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Hub inicio = new Hub(emp);
+                setVisible(false);
+                inicio.setLocationRelativeTo(null);
+                inicio.setVisible(true);
 
             }
         });
@@ -88,35 +115,54 @@ public class Pedido extends JFrame {
 
     public void atualizaPreco(ArrayList<Produto> pr, double[] preco) {
         for (Produto p : pr) {
-
             if (Produtos.getSelectedItem().equals(p.getNome())) {
                 preco[0] = p.getPreco_venda() * Integer.parseInt(tfQuantidade.getText());
-                Preço.setText("Preço " + preco[0] + "€");
+                String resultado = String.format("Preço individual: %.2f€  Preço Total: %.2f€", p.getPreco_venda(), preco[0]);
+                Preço.setText(resultado);
             }
         }
     }
-    public void atualizarTabela(int ultimoId){
+
+    public void atualizaID() {
         try {
-            //adicionar pedidos a tabela
-            Object[][] data = null;
             String sql = "Select * from TblConteudoPedido";
             PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
-
             while (rs.next()) {
-                int i = 0;
-                data[0][i] = rs.getInt("IDPedido");
-                data[1][i] = rs.getInt("IDProduto");
-                data[2][i] = rs.getInt("Quantidade_Pedida");
-                data[3][i] = rs.getInt("Quantidade_Servida");
+                ultimoId = rs.getInt("IDPedido") + 1;
+
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e, "Message5", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+
+    /*    public void atualizarTabela() {
+        try {
+            //adicionar pedidos a tabela
+            int i = 0;
+            Object[][] data = new Object[Funcoes.tamanho()][4];
+            String sql = "Select * from TblConteudoPedido";
+            PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+
+                data[i][0] = rs.getInt("IDPedido");
+                data[i][1] = rs.getInt("IDProduto");
+                data[i][2] = rs.getInt("Quantidade_Pedida");
+                data[i][3] = rs.getInt("Quantidade_Servida");
                 ultimoId = rs.getInt("IDPedido") + 1;
                 i++;
             }
-
             String[] Colunas = {"IDPedido", "IDProduto", "Quantidade Pedida", "Quantidade Servida"};
             Pedidos.setModel(new DefaultTableModel(data, Colunas));
+            Pedidos.repaint();
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e, "Message", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e, "Message2", JOptionPane.ERROR_MESSAGE);
         }
-    }
+    }*/
+
+
 }
