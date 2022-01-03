@@ -18,7 +18,7 @@
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Ver Stock no bar"/>
+          <text value="Stock(Bar/Armazem)"/>
         </properties>
       </component>
       <component id="ffdb7" class="javax.swing.JButton" binding="bSair">
@@ -42,7 +42,7 @@
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Armazem"/>
+          <text value="Alterar Pedidos"/>
         </properties>
       </component>
       <component id="b43fa" class="javax.swing.JLabel" binding="nEmpregado">

@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 
-
 public class Pedido extends JFrame {
     private JPanel iPainel;
     private JLabel Quantidade;
@@ -74,24 +73,29 @@ public class Pedido extends JFrame {
         //quando clicam no adicionar pedido
         bAdicionar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+
                 for (Produto p : pr) {
 
                     if (Produtos.getSelectedItem().equals(p.getNome())) {
-                        int i =Produtos.getSelectedIndex();
-                        if (Funcoes.verStock(Integer.parseInt(tfQuantidade.getText()), p)){ //VERIFICA SE TEM EM STOCK
-                            Funcoes.setDataorDelete("Pedido Colocado com sucesso!", "INSERT INTO TblPedido(IDPedido, IDEmpregado, IDLocal)\n" +
-                                    "VALUES(" + ultimoId + ", " + emp.getId() + ", " + ZurrapaFillial.local + ");");
-                            Funcoes.setDataorDelete("ContuedoPedido Colocado com sucesso!", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida)\n" +
-                                    "VALUES(" + ultimoId + ", " + p.getId() + ", " + Integer.parseInt(tfQuantidade.getText()) + ", " + 0 + ");");
-                        }
-                        if (JOptionPane.showConfirmDialog(null, "Quer adicionar mais algum produto ao pedido?", "Adicionar Produto",
-                                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            // yes option
 
-                        } else {
-                            String pagar = String.format("São: %.2f€", preco[0]);
-                            JOptionPane.showMessageDialog(null, pagar);
+                        if (Funcoes.verStock(Integer.parseInt(tfQuantidade.getText()), p)) { //VERIFICA SE TEM EM STOCK
+                            atualizaID();
+                            System.out.println(ultimoId + ", " + emp.getId() + "," + login.local);
+                            Funcoes.setDataorDelete("Pedido Colocado com sucesso!", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
+                                    "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + login.local + ");");
+                            Funcoes.setDataorDelete("ContuedoPedido Colocado com sucesso!", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida)\n" +
+                                    "VALUES(" + ultimoId + ", " + p.getId() + ", " + Integer.parseInt(tfQuantidade.getText()) + ", " + Integer.parseInt(tfQuantidade.getText()) + ");");
+
                         }
+
+                        String pagar = String.format("São: %.2f€", preco[0]);
+                        JOptionPane.showMessageDialog(null, pagar);
+                        setVisible(false);
+                        Hub inicio = new Hub(emp);
+                        setVisible(false);
+                        inicio.setLocationRelativeTo(null);
+                        inicio.setVisible(true);
+
                     }
                 }
 
@@ -104,8 +108,6 @@ public class Pedido extends JFrame {
                 inicio.setLocationRelativeTo(null);
                 inicio.setVisible(true);
 
-
-
             }
         });
     }
@@ -115,12 +117,13 @@ public class Pedido extends JFrame {
         for (Produto p : pr) {
             if (Produtos.getSelectedItem().equals(p.getNome())) {
                 preco[0] = p.getPreco_venda() * Integer.parseInt(tfQuantidade.getText());
-                String resultado = String.format("Preço individual: %.2f€  Preço Total: %.2f€",p.getPreco_venda(), preco[0]);
+                String resultado = String.format("Preço individual: %.2f€  Preço Total: %.2f€", p.getPreco_venda(), preco[0]);
                 Preço.setText(resultado);
             }
         }
     }
-    public void atualizaID(){
+
+    public void atualizaID() {
         try {
             String sql = "Select * from TblConteudoPedido";
             PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
@@ -128,7 +131,7 @@ public class Pedido extends JFrame {
             while (rs.next()) {
                 ultimoId = rs.getInt("IDPedido") + 1;
 
-        }
+            }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e, "Message5", JOptionPane.ERROR_MESSAGE);
         }
