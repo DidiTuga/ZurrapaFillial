@@ -5,7 +5,7 @@ import java.sql.SQLException;
 public class Conectar {
     public static Connection getCon() {
         try {
-            String url = "jdbc:sqlserver://DESKTOP-UJ26N4k\\SQLEXPRESS;databaseName=ZurrapaFilial;integratedSecurity=true";
+            String url = "jdbc:sqlserver://LAPTOP-1O5UG6DC\\SQLEXPRESS;databaseName=ZurrapaFilial;integratedSecurity=true";
             Connection connection = DriverManager.getConnection(url);
             return connection;
         } catch (Exception e) {
@@ -15,7 +15,7 @@ public class Conectar {
     //ainda nao foi utilizada
         public static Connection getConSede() {
             try {
-                String url = "jdbc:sqlserver://DESKTOP-UJ26N4k\\SQLEXPRESS;databaseName=ZurrapaSede;integratedSecurity=true";
+                String url = "jdbc:sqlserver://LAPTOP-1O5UG6DC\\SQLEXPRESS;databaseName=ZurrapaSede;integratedSecurity=true";
                 Connection connection = DriverManager.getConnection(url);
                 return connection;
             } catch (SQLException e) {
