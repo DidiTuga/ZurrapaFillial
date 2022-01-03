@@ -1,29 +1,38 @@
+import java.util.Objects;
+
 public class Produto {
     private int id;
     private String nome;
-    double preco_venda;
-    double preco_compra;
-    public Produto(){
-        this.id = 0;
+    private double preco_venda;
+    private double preco_compra;
+    public int quantidade;
+    private int ultimoID = 0;
+
+    public Produto() {
+        ultimoID = ultimoID + 1;
+        this.id = ultimoID;
         this.nome = "";
         this.preco_venda = 0.00;
         this.preco_compra = 0.00;
+        this.quantidade = 0;
     }
-    public Produto(int id, String nome, double preco_venda, double preco_compra){
-        this.id = id;
+
+    public Produto(int id, String nome, double preco_venda, double preco_compra) {
+        ultimoID = ultimoID + 1;
+        this.id = ultimoID;
         this.nome = nome;
         this.preco_venda = preco_venda;
         this.preco_compra = preco_compra;
+        this.quantidade = 0;
     }
 
-    @Override
-    public String toString() {
-        return "Produto{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", preco_venda=" + preco_venda +
-                ", preco_compra=" + preco_compra +
-                '}';
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
 
     public int getId() {
@@ -57,4 +66,28 @@ public class Produto {
     public void setPreco_venda(double preco_venda) {
         this.preco_venda = preco_venda;
     }
+
+
+    public String toString() {
+        return "Produto{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", preco_venda=" + preco_venda +
+                ", preco_compra=" + preco_compra +
+                ", quantidade=" + quantidade +
+                '}';
+    }
+
+
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Produto produto = (Produto) o;
+        return id == produto.id && Double.compare(produto.preco_venda, preco_venda) == 0 && Double.compare(produto.preco_compra, preco_compra) == 0 && quantidade == produto.quantidade && ultimoID == produto.ultimoID && Objects.equals(nome, produto.nome);
+    }
+    public Object clone() {
+        Produto x = new Produto(this.id, this.nome, this.preco_venda, this.preco_compra);
+        return x;
+    }
+
 }

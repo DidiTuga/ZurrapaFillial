@@ -46,20 +46,21 @@ public class Funcoes {
 
     public static boolean verStock(int quantidade, Produto p) {
         boolean valor = false;
+        int stock = 0;
+        int armazem = 0;
         try {
             //ir buscar os produtos para os adicionar no combobox
             String sql = "SELECT * From TblStock WHERE IDLocal =2  and IDProduto = " + p.getId(); // ALTERAR O LOCALLLLLL
             PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
-            int stock = 0;
-            int armazem = 0;
+
             while (rs.next()) {
                 if (p.getId() == rs.getInt("IDProduto")) {
                     stock = rs.getInt("Quantidade");
                 }
             }
-            if (stock < quantidade) { // nao existe stock na loja // ve no armazem
-                sql = "Select S.IDProduto, S.Quantidade , C.ConversaoAPB\n" +
+            if (stock < quantidade) { // nao existe stock na loja ve no armazem
+                sql = "Select S.Quantidade , C.ConversaoAPB\n" +
                         "From TblStock S, TblConversao C, TblMedida M\n" +
                         "Where S.IDProduto = " + p.getId() + " \n" +
                         "and S.IDLocal = 1 \n" +
@@ -75,26 +76,14 @@ public class Funcoes {
                     Random rand = new Random();
                     int minutos = rand.nextInt(59) + 1;
                     JOptionPane.showMessageDialog(null, "A entrega do stock está previsto chegar em " + minutos + " minutos.");
-                    armazem -= quantidade;
-                    if (armazem % 12 == 0) { //tentar meter em pacotes de 12
-                        armazem /= 12;
-                        Funcoes.setDataorDelete("A sair do armazém!!",
-                                "Update TblStock\n"
-                                + "SET Quantidade=" + armazem + ","
-                                + "AND IDMedida = " + 2
-                                + "WHERE IDProduto ="+ p.getId()
-                                +"AND IDLocal = 1;"
-                                +"UPDATE TblPedido"
-                                +"SET Estado = 1"
-                                +"WHERE IDProduto ="+p.getId());
-                    } else { // se nao der deixa ficar em minis
-                        Funcoes.setDataorDelete("A sair do armazém!!",
-                                "Update TblStock\n"
-                                + "SET Quantidade=" + armazem + ", "
-                                + "IDMedida = " + 1
-                                + "\nWHERE IDProduto ="+ p.getId()
-                                + "\nAND IDLocal = 1");
+                    // POSSO PERGUNTAR SE QUER MESMO
+                    if (JOptionPane.showConfirmDialog(null, "Quer mesmo assim este produto?", "WARNING",
+                            JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        valor = true;
+                    } else {
+                        valor = false;
                     }
+
                 } else { //stock produto
 
                     JOptionPane.showMessageDialog(null, "Não existe mais stock para esse produto.");
@@ -102,13 +91,7 @@ public class Funcoes {
                 }
             } else { // existe na loja
                 valor = true;
-                stock -=quantidade;
-                Funcoes.setDataorDelete("Está servido!!",
-                        "Update TblStock\n"
-                                + "SET Quantidade=" + stock + ", "
-                                + "IDMedida = " + 1
-                                + "\nWHERE IDProduto ="+ p.getId()
-                                + "\nAND IDLocal = "+ login.local);
+
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e, "Message3", JOptionPane.ERROR_MESSAGE);

@@ -1,8 +1,8 @@
 
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.table.DefaultTableModel;
+import java.awt.event.*;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,31 +11,45 @@ import java.util.ArrayList;
 
 public class Pedido extends JFrame {
     private JPanel iPainel;
-    private JLabel Quantidade;
-    private JLabel Produto;
-    private JComboBox Produtos;
+    private JLabel lbQuantidade;
+    private JLabel lbProduto;
+    private JComboBox CbProdutos;
     private JButton bAdicionar;
-    private JLabel Preço;
+    private JLabel lbPreço;
     private JLabel nEmpregado;
     private JFormattedTextField tfQuantidade;
-    private JButton bSair;
-
+    private JButton bCancelar;
+    private JButton bTerminar;
+    private JLabel lbPedidos;
+    private JTable Pedidos;
+    private JScrollPane JPedidos;
+    private JLabel lbPrecoT;
     private static int ultimoId = 1;
 
     public Pedido(Empregado emp) {
         final double[] preco = {0};
+        ArrayList<Produto> Ppedidos = new ArrayList<>(); //que vao ser pedidos
+        ArrayList<Produto> produtos = new ArrayList<>(); //que existem
+        atualizaID(); // para atualizar o id
 
-        ArrayList<Produto> pr = new ArrayList<>();
+        //Definir janela
         setContentPane(iPainel);
         setTitle("Criar Pedido");
         setSize(450, 450);
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
         //Escrever  nas labels
         nEmpregado.setText("Olá " + emp.getNome() + ".");
-        Quantidade.setText("Quantidade");
-        Produto.setText("Produto");
+        lbQuantidade.setText("Quantidade");
+        lbProduto.setText("Produto");
+        lbPedidos.setText("Pedidos");
+        tfQuantidade.setText("0");
+        //Cria Tabela
 
+        criaTabela(Ppedidos);
+
+        //Colocar os produtos que existem no combobox
         try {
             //ir buscar os produtos para os adicionar no combobox
             String sql = "SELECT * From TblProduto";
@@ -48,121 +62,150 @@ public class Pedido extends JFrame {
                 p.setNome(rs.getString("Designacao"));
                 p.setPreco_venda(rs.getDouble("Preco_venda"));
                 p.setPreco_compra(rs.getDouble("Preco_Compra"));
-                pr.add(p);
+                produtos.add(p);
             }
-            for (Produto produto : pr) {
-                Produtos.addItem(produto.getNome());
+            for (Produto produto : produtos) {
+                CbProdutos.addItem(produto.getNome());
             }
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e, "Message3", JOptionPane.ERROR_MESSAGE);
         }
-        atualizaPreco(pr, preco);
+
+        // atualiza o preço conforme o que está escolhido
+        atualizaPreco(produtos, preco[0]);
+        //Meter a janela visivel
         setVisible(true);
+
+
         //quando alteram o valor da quantidade
         tfQuantidade.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                atualizaPreco(pr, preco);
+                atualizaPreco(produtos, preco[0]);
             }
         });
         //quando escolhem um produto
-        Produtos.addActionListener(new ActionListener() {
+        CbProdutos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                atualizaPreco(pr, preco);
+                atualizaPreco(produtos, preco[0]);
             }
         });
-        //quando clicam no adicionar pedido
+
+        //Quando clicamos no adicionar
+        //Verificamos se tem stock e se tiver adicionamos
         bAdicionar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-
-                for (Produto p : pr) {
-
-                    if (Produtos.getSelectedItem().equals(p.getNome())) {
-
-                        if (Funcoes.verStock(Integer.parseInt(tfQuantidade.getText()), p)) { //VERIFICA SE TEM EM STOCK
-                            atualizaID();
-                            System.out.println(ultimoId + ", " + emp.getId() + "," + login.local);
-                            Funcoes.setDataorDelete("Pedido Colocado com sucesso!", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
-                                    "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + login.local + ");");
-                            Funcoes.setDataorDelete("ContuedoPedido Colocado com sucesso!", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida)\n" +
-                                    "VALUES(" + ultimoId + ", " + p.getId() + ", " + Integer.parseInt(tfQuantidade.getText()) + ", " + Integer.parseInt(tfQuantidade.getText()) + ");");
-
+                int qtd = Integer.parseInt(tfQuantidade.getText());
+                if (qtd <= 0) {
+                    JOptionPane.showMessageDialog(null, "Não podes adcionar produtos com quantidade igual ou inferior a 0.", "Cuidado!", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    for (Produto p : produtos) {
+                        if (CbProdutos.getSelectedItem().equals(p.getNome())) {
+                            if (Funcoes.verStock(qtd, p)) { // SE TIVER stock adiciona ao array de pedidos
+                                Produto L = new Produto();
+                                L = (Produto) p.clone();
+                                L.setQuantidade(qtd);
+                                preco[0] += L.quantidade * L.getPreco_venda();
+                                atualizaPreco(produtos, preco[0]);
+                                Ppedidos.add(L);
+                                criaTabela(Ppedidos);
+                            }
                         }
 
-                        String pagar = String.format("São: %.2f€", preco[0]);
-                        JOptionPane.showMessageDialog(null, pagar);
-                        setVisible(false);
-                        Hub inicio = new Hub(emp);
-                        setVisible(false);
-                        inicio.setLocationRelativeTo(null);
-                        inicio.setVisible(true);
-
                     }
+
                 }
-
             }
         });
-        bSair.addActionListener(new ActionListener() {
+
+        //Quando clicamos no cancelar pedido
+        //apagamos o array e saimos novamente para o hub
+        bCancelar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Hub inicio = new Hub(emp);
-                setVisible(false);
-                inicio.setLocationRelativeTo(null);
-                inicio.setVisible(true);
-
+                dispose();
+                Hub hub = new Hub(emp);
+                hub.setLocationRelativeTo(null);
             }
         });
-    }
+
+        //Quando clicamos no terminar pedido
+        // Cria um pedido com o ultimoid e o iddo empregado
+        //Submete tudo o que esta no array pPedidos para o conteudopedidos
+        bTerminar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
 
 
-    public void atualizaPreco(ArrayList<Produto> pr, double[] preco) {
-        for (Produto p : pr) {
-            if (Produtos.getSelectedItem().equals(p.getNome())) {
-                preco[0] = p.getPreco_venda() * Integer.parseInt(tfQuantidade.getText());
-                String resultado = String.format("Preço individual: %.2f€  Preço Total: %.2f€", p.getPreco_venda(), preco[0]);
-                Preço.setText(resultado);
+                dispose();
+                Hub hub = new Hub(emp);
+                hub.setLocationRelativeTo(null);
             }
-        }
+        });
+        Pedidos.addMouseListener(new MouseAdapter() { //////////////////////////////////// ESTA A DAR ERRO
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                int index = Pedidos.getSelectedRow();
+                System.out.println(index);
+                if (JOptionPane.showConfirmDialog(null, "Não consegues editar esta linha, queres eliminar esta linha?", "Editar Pedido",
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    //Se sim
+
+                    Pedidos.remove(index);
+                    preco[0] = preco[0] - (Ppedidos.get(index - 1).getQuantidade() * Ppedidos.get(index - 1).getPreco_venda());
+
+                    Ppedidos.remove(index);
+                    criaTabela(Ppedidos);
+
+                }
+            }
+        });
+
     }
 
     public void atualizaID() {
         try {
-            String sql = "Select * from TblConteudoPedido";
-            PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = Funcoes.getDataF("SELECT MAX(IDPedido) from TblConteudoPedido");
             while (rs.next()) {
-                ultimoId = rs.getInt("IDPedido") + 1;
-
+                ultimoId = rs.getInt("") + 1;
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e, "Message5", JOptionPane.ERROR_MESSAGE);
+
         }
     }
 
+    public void atualizaPreco(ArrayList<Produto> pr, double preco) {
+        for (Produto p : pr) {
+            double tmp = 0;
+            if (CbProdutos.getSelectedItem().equals(p.getNome())) {
 
-    /*    public void atualizarTabela() {
-        try {
-            //adicionar pedidos a tabela
-            int i = 0;
-            Object[][] data = new Object[Funcoes.tamanho()][4];
-            String sql = "Select * from TblConteudoPedido";
-            PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-
-                data[i][0] = rs.getInt("IDPedido");
-                data[i][1] = rs.getInt("IDProduto");
-                data[i][2] = rs.getInt("Quantidade_Pedida");
-                data[i][3] = rs.getInt("Quantidade_Servida");
-                ultimoId = rs.getInt("IDPedido") + 1;
-                i++;
+                tmp = preco + p.getPreco_venda() * Integer.parseInt(tfQuantidade.getText());
+                String resultado = String.format("Preço individual: %.2f€  Preço Suposto: %.2f€", p.getPreco_venda(), tmp);
+                lbPreço.setText(resultado);
             }
-            String[] Colunas = {"IDPedido", "IDProduto", "Quantidade Pedida", "Quantidade Servida"};
-            Pedidos.setModel(new DefaultTableModel(data, Colunas));
-            Pedidos.repaint();
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e, "Message2", JOptionPane.ERROR_MESSAGE);
         }
-    }*/
+    }
+
+    public void criaTabela(ArrayList<Produto> Ppedidos) {
+        Object[][] data = new Object[Ppedidos.size()][2];
+        String[] colunas = {"Produto", "Quantidade" };
+        for (int i = 0; i < Ppedidos.size(); i++) {
+            data[i][0] = Ppedidos.get(i).getNome();
+            data[i][1] = Ppedidos.get(i).getQuantidade();
+
+        }
+        DefaultTableModel tableModel = new DefaultTableModel(data, colunas) {
+
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                //mete tudo a que nao pode editar
+                return false;
+            }
+        };
+
+        Pedidos.setModel(tableModel);
+
+    }
 
 
 }

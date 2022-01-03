@@ -4,57 +4,60 @@ import java.awt.event.ActionListener;
 import java.sql.*;
 
 public class login extends JFrame {
-    private JTextField tfFirstName;
-    private JButton Registar;
-    private JPasswordField PasswordField;
-    private JPanel mainFrame;
-    private JLabel lbpassword;
-    private JLabel lbutilizador;
+    private JTextField usernameField;
+    private JButton connectButton;
+    private JPasswordField passwordField;
+    private JPanel window;
+    private JLabel passwordLabel;
+    private JLabel usernameLabel;
     private JButton clearButton;
-    public static int local;
+
 
     public login() {
-        setContentPane(mainFrame);
-        setTitle("Bem-Vindo à Zurrapa Fillial");
-        setSize(350, 200);
-        setResizable(false); // assim a janela fica com um só tamanho
-        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        //----- Definicoes da Janela -----
+        setContentPane(window);                                  // Coloca a janela, como ativa
+        setTitle("Bem-Vindo à Zurrapa Filial");                  // Define titulo
+        setSize(350, 200);                           // Define tamanho
+        setResizable(false);                                     // Define alteracao de tamanho
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // Define fechar tudo ao fechar a janela
         setVisible(true);
-        Registar.addActionListener(new ActionListener() {
+        //----- Acoes -----
+        connectButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                try { //Compara as primeiras duas colunas com os dois primeiros parametros
-                    String sql = "Select Username, Palavra_passe, Nome, IDEmpregado, IDLocal from TblEmpregado Where Username = ? and Palavra_Passe= ?";
-                    PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
-                    pst.setString(1, tfFirstName.getText());
-                    pst.setString(2, String.valueOf(PasswordField.getPassword()));
-                    ResultSet rs = pst.executeQuery();
-                    if (rs.next()) {
-                        setVisible(false); //meter o login invisivel e meter o hub
-                        Empregado emp = new Empregado(rs.getInt(4), rs.getString(3));
-                        local = rs.getInt(5);
-                        Hub inicio = new Hub(emp);
-                        inicio.setLocationRelativeTo(null);
-                        inicio.setVisible(true);
+                try { // Validar utilizador e palavrapasse
+
+                    String query = "Select Username, Palavra_passe, Nome, IDEmpregado from TblEmpregado Where Username = ? and Palavra_Passe= ?";
+                    Connection connection = Conectar.getCon(); // Cria conecao com a base de dados
+                    PreparedStatement pst = connection.prepareStatement(query);
+                    pst.setString(1, usernameField.getText());
+                    pst.setString(2, String.valueOf(passwordField.getPassword()));
+                    ResultSet result = pst.executeQuery();
+
+                    if (result.next()) {
+                        Empregado empregadoAtual = new Empregado(result.getInt(4), result.getString(3));
+                        Hub hub_Gestao = new Hub(empregadoAtual);
+
+                        dispose(); // Fecha Janela Atual
+                        hub_Gestao.setLocationRelativeTo(null);
+                        hub_Gestao.setVisible(true);
 
                     } else {
                         JOptionPane.showMessageDialog(null, "Os dados que colocou estavam errados!");
                     }
-                    Conectar.getCon().close();
+
+                    connection.close(); // Fecha conecao com a base de dados
                 } catch (SQLException c) {
                     System.out.println("Oops, deu error!!");
                     c.printStackTrace();
                 }
             }
         });
+
         clearButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                clear();
+                usernameField.setText("");
+                passwordField.setText("");
             }
         });
     }
-    public void clear(){
-        tfFirstName.setText("");
-        PasswordField.setText("");
-    }
-
 }

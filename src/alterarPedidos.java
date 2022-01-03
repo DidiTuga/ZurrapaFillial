@@ -8,4 +8,5 @@ public class alterarPedidos {
     private JLabel nEmpregado;
     private JTextField textField1;
     private JComboBox comboBox1;
+    private JPanel painel;
 }

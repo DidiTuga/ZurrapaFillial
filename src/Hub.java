@@ -19,26 +19,21 @@ public class Hub extends JFrame {
         setSize(400, 300);
         setResizable(false); //Assim nao se pode mudar o tamanho
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //clicar no x para fechar
-
-
         nEmpregado.setText("Bem-vindo " + emp.getNome() + ".");
-
+        setVisible(true);
         //Criar Pedido
         bPedido.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
-                try {
-                    Pedido pedido = new Pedido(emp);
-                    pedido.setLocationRelativeTo(null);
-                } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, ex, "MessageP", JOptionPane.ERROR_MESSAGE);
-                }
-
+                dispose();
+                Pedido pedido = new Pedido(emp);
+                pedido.setLocationRelativeTo(null);
+                pedido.setVisible(true);
             }
         });
+
         bSair.addActionListener(new ActionListener() { //sair
             public void actionPerformed(ActionEvent e) {
-                setVisible(false);
+                dispose();
                 login inicio = new login();
                 inicio.setLocationRelativeTo(null);
             }
