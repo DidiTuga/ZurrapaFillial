@@ -9,8 +9,7 @@ public class Produto {
     private int ultimoID = 0;
 
     public Produto() {
-        ultimoID = ultimoID + 1;
-        this.id = ultimoID;
+        this.id = 0;
         this.nome = "";
         this.preco_venda = 0.00;
         this.preco_compra = 0.00;
@@ -18,8 +17,7 @@ public class Produto {
     }
 
     public Produto(int id, String nome, double preco_venda, double preco_compra) {
-        ultimoID = ultimoID + 1;
-        this.id = ultimoID;
+        this.id = id;
         this.nome = nome;
         this.preco_venda = preco_venda;
         this.preco_compra = preco_compra;
@@ -66,7 +64,6 @@ public class Produto {
     public void setPreco_venda(double preco_venda) {
         this.preco_venda = preco_venda;
     }
-
 
     public String toString() {
         return "Produto{" +

@@ -17,15 +17,16 @@ public class Funcoes {
         }
 
     }
-    public static ResultSet getDataF(String query){
-        try{
+
+    public static ResultSet getDataF(String query) {
+        try {
             Connection con = Conectar.getCon();
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);
-            return  rs;
-        }catch (Exception e){
+            return rs;
+        } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e, "Message", JOptionPane.ERROR_MESSAGE);
-            return  null;
+            return null;
         }
     }
 
@@ -50,34 +51,29 @@ public class Funcoes {
         int armazem = 0;
         try {
             //ir buscar os produtos para os adicionar no combobox
-            String sql = "SELECT * From TblStock WHERE IDLocal =2  and IDProduto = " + p.getId(); // ALTERAR O LOCALLLLLL
-            PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
-
+            ResultSet rs = getDataF("SELECT * From TblStock WHERE IDLocal =2  and IDProduto = " + p.getId());
             while (rs.next()) {
                 if (p.getId() == rs.getInt("IDProduto")) {
                     stock = rs.getInt("Quantidade");
                 }
             }
             if (stock < quantidade) { // nao existe stock na loja ve no armazem
-                sql = "Select S.Quantidade , C.ConversaoAPB\n" +
+                rs = getDataF("Select S.Quantidade , C.ConversaoAPB\n" +
                         "From TblStock S, TblConversao C, TblMedida M\n" +
                         "Where S.IDProduto = " + p.getId() + " \n" +
                         "and S.IDLocal = 1 \n" +
                         "and S.IDMedida = M.IDMedida \n" +
-                        "and C.IDMedidaA = S.IDMedida ";
-                pst = Conectar.getCon().prepareStatement(sql);
-                rs = pst.executeQuery();
+                        "and C.IDMedidaA = S.IDMedida ");
                 while (rs.next()) {
                     armazem += rs.getInt("Quantidade") * rs.getInt("ConversaoAPB"); //+= pois pode ter diferente medidas
                 }
-                if (armazem > quantidade) { // existe no armazem
+                if (armazem >= quantidade) { // existe no armazem
                     valor = true;
                     Random rand = new Random();
-                    int minutos = rand.nextInt(59) + 1;
+                    int minutos = rand.nextInt(59) + 1;// PERGUNTA AO UTILIZADOR SE QUER ESPERA
                     JOptionPane.showMessageDialog(null, "A entrega do stock está previsto chegar em " + minutos + " minutos.");
                     // POSSO PERGUNTAR SE QUER MESMO
-                    if (JOptionPane.showConfirmDialog(null, "Quer mesmo assim este produto?", "WARNING",
+                    if (JOptionPane.showConfirmDialog(null, "Quer mesmo assim este produto?", "Stock",
                             JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                         valor = true;
                     } else {
@@ -98,5 +94,4 @@ public class Funcoes {
         }
         return valor;
     }
-
 }
