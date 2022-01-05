@@ -1,6 +1,7 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Funcoes {
@@ -28,21 +29,6 @@ public class Funcoes {
             JOptionPane.showMessageDialog(null, e, "Message", JOptionPane.ERROR_MESSAGE);
             return null;
         }
-    }
-
-    public static int tamanho() {
-        int tam = 0;
-        try {
-
-            PreparedStatement pst = Conectar.getCon().prepareStatement("Select * from TblConteudoPedido");
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-                tam++;
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e, "Message1", JOptionPane.ERROR_MESSAGE);
-        }
-        return tam;
     }
 
     public static boolean verStock(int quantidade, Produto p) {
@@ -93,5 +79,21 @@ public class Funcoes {
             JOptionPane.showMessageDialog(null, e, "Message3", JOptionPane.ERROR_MESSAGE);
         }
         return valor;
+    }
+    //ve quais produtos existem
+    public static ArrayList<Produto> verProdutos() {
+        ArrayList<Produto> produtos = new ArrayList<>();
+        try {
+            ResultSet rip = Funcoes.getDataF("SELECT * From TblProduto");
+            while (rip.next()) {
+                Produto x = new Produto(rip.getInt("IDProduto"), rip.getString("Designacao"));
+                produtos.add(x);
+            }
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, e, "Importar Pedidos a tratar", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return produtos;
     }
 }

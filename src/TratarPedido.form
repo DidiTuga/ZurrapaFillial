@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="alterarPedidos">
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="TratarPedido">
   <grid id="27dc6" binding="painel" layout-manager="GridLayoutManager" row-count="7" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="20" left="20" bottom="20" right="20"/>
     <constraints>
-      <xy x="20" y="20" width="556" height="356"/>
+      <xy x="20" y="20" width="727" height="360"/>
     </constraints>
     <properties>
       <background color="-1"/>
@@ -11,12 +11,12 @@
     </properties>
     <border type="none"/>
     <children>
-      <scrollpane id="6083" binding="Tabela">
+      <scrollpane id="6083" binding="PedidosA">
         <constraints>
           <grid row="1" column="1" row-span="6" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <background color="-15427909"/>
+          <background color="-1"/>
           <foreground color="-15427909"/>
         </properties>
         <border type="none" title=""/>
@@ -39,20 +39,13 @@
           <text value="Label"/>
         </properties>
       </component>
-      <component id="6da7c" class="javax.swing.JButton" binding="bfecharPedido">
+      <component id="7f9e7" class="javax.swing.JButton" binding="balterarQtd">
         <constraints>
-          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Fechar Pedido"/>
-        </properties>
-      </component>
-      <component id="7f9e7" class="javax.swing.JButton" binding="balterarPedido">
-        <constraints>
-          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Alterar Pedido"/>
+          <enabled value="false"/>
+          <text value="Alterar Quantidade"/>
         </properties>
       </component>
       <component id="f1e40" class="javax.swing.JLabel">
@@ -65,7 +58,7 @@
           <text value="Quantidade Servida"/>
         </properties>
       </component>
-      <component id="73c60" class="javax.swing.JLabel">
+      <component id="73c60" class="javax.swing.JLabel" binding="lbProduto">
         <constraints>
           <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="124" height="16"/>
@@ -75,15 +68,7 @@
           <text value="Produto"/>
         </properties>
       </component>
-      <component id="62c2c" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
-        <constraints>
-          <grid row="4" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="124" height="30"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
-      <component id="922c" class="javax.swing.JTextField" binding="textField1" default-binding="true">
+      <component id="922c" class="javax.swing.JTextField" binding="tfQuantidadeS">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="70" height="30"/>
@@ -91,6 +76,34 @@
         </constraints>
         <properties>
           <text value=""/>
+        </properties>
+      </component>
+      <component id="b30ec" class="javax.swing.JLabel" binding="lbPedidosA">
+        <constraints>
+          <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Label"/>
+        </properties>
+      </component>
+      <component id="6da7c" class="javax.swing.JButton" binding="bfecharPedido">
+        <constraints>
+          <grid row="5" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <enabled value="false"/>
+          <rolloverEnabled value="true"/>
+          <selected value="false"/>
+          <text value="Fechar Pedido"/>
+          <visible value="true"/>
+        </properties>
+      </component>
+      <component id="672fc" class="javax.swing.JButton" binding="bSair">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Sair"/>
         </properties>
       </component>
     </children>

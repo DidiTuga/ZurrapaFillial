@@ -34,15 +34,15 @@
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Criar Pedido"/>
+          <text value="Criar Pedidos"/>
         </properties>
       </component>
-      <component id="e669" class="javax.swing.JButton" binding="bArmazem">
+      <component id="e669" class="javax.swing.JButton" binding="bTratarPedido">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Alterar Pedidos"/>
+          <text value="Tratar Pedidos"/>
         </properties>
       </component>
       <component id="b43fa" class="javax.swing.JLabel" binding="nEmpregado">

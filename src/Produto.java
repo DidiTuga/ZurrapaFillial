@@ -23,7 +23,13 @@ public class Produto {
         this.preco_compra = preco_compra;
         this.quantidade = 0;
     }
-
+    public Produto(int id, String nome) {
+        this.id = id;
+        this.nome = nome;
+        this.preco_venda = 0;
+        this.preco_compra = 0;
+        this.quantidade = 0;
+    }
 
     public int getQuantidade() {
         return quantidade;
@@ -86,5 +92,6 @@ public class Produto {
         Produto x = new Produto(this.id, this.nome, this.preco_venda, this.preco_compra);
         return x;
     }
+
 
 }
