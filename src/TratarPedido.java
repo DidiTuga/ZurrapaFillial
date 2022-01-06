@@ -26,7 +26,7 @@ public class TratarPedido extends JFrame {
     private ArrayList<ConteudoPedido> pfechar = new ArrayList<>();
     private ArrayList<Produto> produtos = new ArrayList<>();
 
-    public TratarPedido(Empregado emp) {
+    public TratarPedido(Empregado emp, Local local) {
         //Definir janela
         setContentPane(painel);
         setTitle("Tratar de Pedidos");
@@ -35,10 +35,10 @@ public class TratarPedido extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         //Editar as caixas de texto
         lbPedidosA.setText("Pedidos em Aberto");
-        nEmpregado.setText("Olá, " + emp.getNome() + ".");
+        nEmpregado.setText("Olá, " + emp.getNome() + ". Encontra-se no " + local.getNome() + ".");
 
         //Mandar os dados para a tabela
-        pfechar = atualizaDados();
+        pfechar = atualizaDados(local.getIdLocal());
         produtos = Funcoes.verProdutos();
         criaTabela(pfechar);
 
@@ -50,7 +50,7 @@ public class TratarPedido extends JFrame {
         bSair.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Hub ola = new Hub(emp);
+                Hub ola = new Hub(emp, local);
                 ola.setLocationRelativeTo(null);
             }
         });
@@ -79,21 +79,24 @@ public class TratarPedido extends JFrame {
         balterarQtd.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int index = Pedidos.getSelectedRow();
-                int valor = Integer.parseInt(tfQuantidadeS.getText());
-
-                ConteudoPedido tmp = pfechar.get(index); //FUNCIONA COMO UM APONTADOR
-                if (valor <= tmp.getQuantidade_pedida()) {
-                    tmp.setQuantidade_servida(valor);
-                    criaTabela(pfechar);
-                    Funcoes.setDataorDelete("Mudar o valor da QTD do Pedido",
-                            " UPDATE TblConteudoPedido\n" +
-                                    "Set Quantidade_Servida =" + valor +
-                                    "\nWHERE IDProduto = " + tmp.getIdProduto() +
-                                    "\nand IDPedido = " + tmp.getIdPedido());
+                if (index == -1) {
+                    JOptionPane.showMessageDialog(null, "Tem que selecionar uma linha da tabela.", "AVISO", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Não pode colocar um valor acima da quantidade pedida.", "AVISO na Quantidade Servida", JOptionPane.WARNING_MESSAGE);
-                }
+                    int valor = Integer.parseInt(tfQuantidadeS.getText());
 
+                    ConteudoPedido tmp = pfechar.get(index); //FUNCIONA COMO UM APONTADOR
+                    if (valor <= tmp.getQuantidade_pedida()) {
+                        tmp.setQuantidade_servida(valor);
+                        criaTabela(pfechar);
+                        Funcoes.setDataorDelete("Mudar o valor da QTD do Pedido",
+                                " UPDATE TblConteudoPedido\n" +
+                                        "Set Quantidade_Servida =" + valor +
+                                        "\nWHERE IDProduto = " + tmp.getIdProduto() +
+                                        "\nand IDPedido = " + tmp.getIdPedido());
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Não pode colocar um valor acima da quantidade pedida.", "AVISO na Quantidade Servida", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
             }
         });
         //Fechar pedido
@@ -102,54 +105,61 @@ public class TratarPedido extends JFrame {
         bfecharPedido.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int index = Pedidos.getSelectedRow();
-                ConteudoPedido tmp = pfechar.get(index); //FUNCIONA COMO UM APONTADOR
-                if (verificaPedido(pfechar, index)) {
-                    Funcoes.setDataorDelete("Meter o valor estado = 1",
-                            " UPDATE TblPedido\n" +
-                                    "Set Estado = "+1 +
-                                    "\nWHERE IDPedido = " + tmp.getIdPedido());
-                    JOptionPane.showMessageDialog(null, "Pedido fechado com sucesso!", "Ação feita com sucesso", JOptionPane.INFORMATION_MESSAGE);
+                if (index == -1) {
+                    JOptionPane.showMessageDialog(null, "Tem que selecionar uma linha da tabela.", "AVISO", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Para fechar o pedido, as quantidades do(s) produto(s) têm de ser iguais.", "AVISO na Quantidade Servida", JOptionPane.WARNING_MESSAGE);
+                    ConteudoPedido tmp = pfechar.get(index); //FUNCIONA COMO UM APONTADOR
+                    if (verificaPedido(pfechar, index)) {
+                        String update = "UPDATE TblPedido\n" + "Set Estado = 1" + "\nWHERE IDPedido = " + tmp.getIdPedido() + "\nAND IDLocal =" + local.getIdLocal();
+                        Funcoes.setDataorDelete("Meter o valor estado = 1", update);
+                        JOptionPane.showMessageDialog(null, "Pedido fechado com sucesso!", "Ação feita com sucesso", JOptionPane.INFORMATION_MESSAGE);
+
+                        //Voltar para o hub pois o pedido ja foi fechado
+
+                        dispose();
+                        Hub zamal = new Hub(emp, local);
+                        zamal.setLocationRelativeTo(null);
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Para fechar o pedido, as quantidades do(s) produto(s) têm de ser iguais.", "AVISO na Quantidade Servida", JOptionPane.WARNING_MESSAGE);
+                    }
+
                 }
-                dispose();
-                Hub zamal = new Hub(emp);
-                zamal.setLocationRelativeTo(null);
             }
         });
     }
 
     //Verifica se existem mais pedidos com o mesmo id e ve se esses tem a quantidade servida no maximo
-    public boolean verificaPedido(ArrayList<ConteudoPedido> pfechar, int index){
+    public boolean verificaPedido(ArrayList<ConteudoPedido> pfechar, int index) {
         boolean valor = true;
         int t = 0;
         ConteudoPedido tmp = pfechar.get(index); //FUNCIONA COMO UM APONTADOR
-        for (ConteudoPedido x : pfechar){
-            if (tmp.getIdPedido()==x.getIdPedido()){
+        for (ConteudoPedido x : pfechar) {
+            if (tmp.getIdPedido() == x.getIdPedido()) {
                 int qtdp = x.getQuantidade_pedida();
                 int qtds = x.getQuantidade_servida();
-                if(x.getQuantidade_pedida()==x.getQuantidade_servida()  && t == 0){
+                if (x.getQuantidade_pedida() == x.getQuantidade_servida() && t == 0) {
                     t = 0;
-                }
-                else{
+                } else {
                     t = 1;
                 }
             }
         }
-        if(t==1){
+        if (t == 1) {
             valor = false;
         }
         return valor;
     }
 
     //Atualiza os dados do array
-    public ArrayList<ConteudoPedido> atualizaDados() {
+    public ArrayList<ConteudoPedido> atualizaDados(int local) {
         ArrayList<ConteudoPedido> pfechar = new ArrayList<>();
         try {
             ResultSet rip = Funcoes.getDataF(
                     "SELECT p.IDPedido, cp.IDProduto, cp.Quantidade_Pedida, cp.Quantidade_Servida " +
                             "FROM TblPedido p, TblConteudoPedido cp " +
-                            "WHERE p.IDPedido = cp.IDPedido and Estado = 0");
+                            "WHERE p.IDPedido = cp.IDPedido and Estado = 0" +
+                            "AND p.IDLocal = " + local);
             while (rip.next()) {
                 ConteudoPedido x = new ConteudoPedido(rip.getInt("IDPedido"), rip.getInt("IDProduto"), rip.getInt("Quantidade_servida"), rip.getInt("Quantidade_Pedida"));
                 pfechar.add(x);
@@ -160,7 +170,6 @@ public class TratarPedido extends JFrame {
         }
         return pfechar;
     }
-
 
 
     //cria a tabela e coloca la tudo

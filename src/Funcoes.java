@@ -14,7 +14,7 @@ public class Funcoes {
                 JOptionPane.showMessageDialog(null, msg);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e, "Message0", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e, "SetDataORDelete", JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -26,18 +26,18 @@ public class Funcoes {
             ResultSet rs = st.executeQuery(query);
             return rs;
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e, "Message", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e, "getDataF", JOptionPane.ERROR_MESSAGE);
             return null;
         }
     }
 
-    public static boolean verStock(int quantidade, Produto p) {
+    public static boolean verStock(int quantidade, Produto p, int idlocal) {
         boolean valor = false;
         int stock = 0;
         int armazem = 0;
         try {
             //ir buscar os produtos para os adicionar no combobox
-            ResultSet rs = getDataF("SELECT * From TblStock WHERE IDLocal =2  and IDProduto = " + p.getId());
+            ResultSet rs = getDataF("SELECT * From TblStock WHERE IDLocal =" + idlocal + "and IDProduto = " + p.getId());
             while (rs.next()) {
                 if (p.getId() == rs.getInt("IDProduto")) {
                     stock = rs.getInt("Quantidade");
@@ -80,6 +80,7 @@ public class Funcoes {
         }
         return valor;
     }
+
     //ve quais produtos existem
     public static ArrayList<Produto> verProdutos() {
         ArrayList<Produto> produtos = new ArrayList<>();

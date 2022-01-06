@@ -10,13 +10,13 @@ public class Hub extends JFrame {
     private JButton bTratarPedido;
     private JLabel nEmpregado;
 
-    public Hub(Empregado emp) {
+    public Hub(Empregado emp, Local local) {
         setContentPane(Painel);
         setTitle("HUB");
         setSize(400, 300);
         setResizable(false); //Assim nao se pode mudar o tamanho
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //clicar no x para fechar
-        nEmpregado.setText("Bem-vindo " + emp.getNome() + ".");
+        nEmpregado.setText("Bem-vindo " + emp.getNome() + ".\n Encontra-se no " + local.getNome() + ".");
         setVisible(true);
 
 
@@ -24,7 +24,7 @@ public class Hub extends JFrame {
         bPedido.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Pedido pedido = new Pedido(emp);
+                Pedido pedido = new Pedido(emp, local);
                 pedido.setLocationRelativeTo(null);
             }
         });
@@ -33,7 +33,7 @@ public class Hub extends JFrame {
         bTratarPedido.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             dispose();
-            TratarPedido tp = new TratarPedido(emp);
+            TratarPedido tp = new TratarPedido(emp, local);
             tp.setLocationRelativeTo(null);
             }
         });

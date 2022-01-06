@@ -26,12 +26,11 @@ public class Pedido extends JFrame {
     private JScrollPane JPedidos;
     private static int ultimoId = 1;
 
-    public Pedido(Empregado emp) {
+    public Pedido(Empregado emp, Local local) {
         final double[] preco = {0};
         ArrayList<Produto> Ppedidos = new ArrayList<>(); //que vao ser pedidos
         ArrayList<Produto> produtos = new ArrayList<>(); //que existem
-        int sitio = 0; // SE for 0 vai ser retirar o produto do bar ou 1 se for do armazem
-        atualizaID(); // para atualizar o id
+        atualizaID(local.getIdLocal()); // para atualizar o id
 
         //Definir janela
         setContentPane(iPainel);
@@ -41,7 +40,7 @@ public class Pedido extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         //Escrever  nas labels
-        nEmpregado.setText("Olá " + emp.getNome() + ".");
+        nEmpregado.setText("Olá " + emp.getNome() + ". Está no "+ local.getNome() + ".");
         lbQuantidade.setText("Quantidade");
         lbProduto.setText("Produto");
         lbPedidos.setText("Pedidos");
@@ -70,7 +69,7 @@ public class Pedido extends JFrame {
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e, "Message3", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e, "Pedido, adicionar a Combo", JOptionPane.ERROR_MESSAGE);
         }
 
         // atualiza o preço conforme o que está escolhido
@@ -110,7 +109,7 @@ public class Pedido extends JFrame {
                 } else {
                     for (Produto p : produtos) {
                         if (CbProdutos.getSelectedItem().equals(p.getNome())) {
-                            if (Funcoes.verStock(Maxqtd, p)) { // SE TIVER stock adiciona ao array de pedidos
+                            if (Funcoes.verStock(Maxqtd, p, local.getIdLocal())) { // SE TIVER stock adiciona ao array de pedidos
                                 Produto L = new Produto();
                                 L = (Produto) p.clone();
                                 L.setQuantidade(Maxqtd);
@@ -139,7 +138,7 @@ public class Pedido extends JFrame {
         bCancelar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                Hub hub = new Hub(emp);
+                Hub hub = new Hub(emp, local);
                 hub.setLocationRelativeTo(null);
             }
         });
@@ -151,7 +150,7 @@ public class Pedido extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 // SUBMETER O PEDIDO COM O IDLOCAL E EMPREGADO E ESTADO 0 POIS DEPOIS VAI PARA O PROCESSAMENTO
                 Funcoes.setDataorDelete("Pedido Colocado com sucesso!", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
-                        "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + 2 + ");"); //ONDE ESTA O 2 é para meter o do localZ
+                        "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + local.getIdLocal() + ");"); //ONDE ESTA O 2 é para meter o do localZ
 
 
                     // SUBMETER PARA O CONTEUDOPEDIDO COM OS DIFERENTES PRODUTOS
@@ -163,7 +162,7 @@ public class Pedido extends JFrame {
                                 "VALUES(" + ultimoId + ", " + y.getId() + ", " + y.quantidade + ", " + 0 + ");");
                             //VER SE VOU RETIRAR AO ARMAZEM OU SE TIRO NA LOJA
                             // ATRAVES DAQUELE QUE TEM QUANTIDADE
-                        ResultSet rs = Funcoes.getDataF("SELECT Quantidade FROM TblStock WHERE IDProduto=" + y.getId() + "AND IDLOCAL ="+ 2); /////////////////////////////////// COLOCAR O IDLOCAL CERTO CORRIGIR
+                        ResultSet rs = Funcoes.getDataF("SELECT Quantidade FROM TblStock WHERE IDProduto=" + y.getId() + "AND IDLOCAL ="+ local.getIdLocal());
                         if (rs.next()) {
                             quantidade = rs.getInt("Quantidade");
                         }
@@ -174,10 +173,11 @@ public class Pedido extends JFrame {
                                             + "SET Quantidade=" + quantidade + ", "
                                             + "IDMedida = " + 1
                                             + "\nWHERE IDProduto ="+ y.getId()
-                                            + "\nAND IDLocal = "+ 2); /////////////////////////////////// COLOCAR O IDLOCAL CERTO CORRIGIR
+                                            + "\nAND IDLocal = "+ local.getIdLocal());
                         }
                         else{
                             quantidade = 0;
+                            //vai ver a quantidade que esta no armazem
                             ResultSet rip = Funcoes.getDataF("Select S.Quantidade , C.ConversaoAPB\n" +
                                     "From TblStock S, TblConversao C, TblMedida M\n" +
                                     "Where S.IDProduto = " + y.getId() + " \n" +
@@ -200,7 +200,7 @@ public class Pedido extends JFrame {
                         }
                 }
                 dispose();
-                Hub hub = new Hub(emp);
+                Hub hub = new Hub(emp, local);
                 hub.setLocationRelativeTo(null);
             }
         });
@@ -223,14 +223,14 @@ public class Pedido extends JFrame {
 
     }
 
-    public void atualizaID() {
+    public void atualizaID(int local) {
         try {
-            ResultSet rs = Funcoes.getDataF("SELECT MAX(IDPedido) from TblConteudoPedido");
+            ResultSet rs = Funcoes.getDataF("SELECT MAX(IDPedido) from TblPedido WHERE IDLocal = " + local);
             while (rs.next()) {
                 ultimoId = rs.getInt("") + 1;
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e, "Message5", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e, "PEdido - AtualizaID", JOptionPane.ERROR_MESSAGE);
 
         }
     }
@@ -257,7 +257,6 @@ public class Pedido extends JFrame {
         }
         model = new DefaultTableModel(data, colunas) {
 
-            @Override
             public boolean isCellEditable(int row, int column) {
                 //mete tudo a que nao pode editar
                 return false;
