@@ -30,6 +30,13 @@ public class Produto {
         this.preco_compra = 0;
         this.quantidade = 0;
     }
+    public Produto(int id,double preco_venda, double preco_compra, int qtd ) {
+        this.id = id;
+        this.nome = "";
+        this.preco_venda = preco_venda;
+        this.preco_compra = preco_compra;
+        this.quantidade = qtd;
+    }
 
     public int getQuantidade() {
         return quantidade;

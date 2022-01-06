@@ -70,12 +70,15 @@ public class login extends JFrame {
 
                     if (result.next()) {
                         Empregado empregadoAtual = new Empregado(result.getInt(4), result.getString(3));
-                        Hub hub_Gestao = new Hub(empregadoAtual, local);
-
-                        dispose(); // Fecha Janela Atual
-                        hub_Gestao.setLocationRelativeTo(null);
-                        hub_Gestao.setVisible(true);
-
+                        if(local.getIdLocal()==1){ // se ele selecionar o armazem aparece o menu armazem
+                            HubArmazem armazem = new HubArmazem(empregadoAtual);
+                            dispose();
+                            armazem.setLocationRelativeTo(null);
+                        }else { // se ele selecionar outro sem ser o armazem vai o outro
+                            Hub hub_Gestao = new Hub(empregadoAtual, local);
+                            dispose(); // Fecha Janela Atual
+                            hub_Gestao.setLocationRelativeTo(null);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(null, "Os dados que colocou estavam errados!");
                     }

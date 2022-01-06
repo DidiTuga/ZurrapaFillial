@@ -204,6 +204,7 @@ public class Pedido extends JFrame {
                 hub.setLocationRelativeTo(null);
             }
         });
+
         Pedidos.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);

@@ -10,11 +10,24 @@ public class Funcoes {
             Connection con = Conectar.getCon();
             PreparedStatement pst = con.prepareStatement(Query);
             int rs = pst.executeUpdate();
-            if (msg.equals("")) {
+            if (!msg.equals("")) {
                 JOptionPane.showMessageDialog(null, msg);
             }
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e, "SetDataORDelete", JOptionPane.ERROR_MESSAGE);
+        }
+
+    }
+    public static void setDataorDeleteS(String msg, String Query) {
+        try {
+            Connection con = Conectar.getConSede();
+            PreparedStatement pst = con.prepareStatement(Query);
+            int rs = pst.executeUpdate();
+            if (!msg.equals("")) {
+                JOptionPane.showMessageDialog(null, msg);
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "A caixa já foi fechada hoje!", "Erro ao fechar caixa", JOptionPane.ERROR_MESSAGE);
         }
 
     }
