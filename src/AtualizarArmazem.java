@@ -19,6 +19,8 @@ public class AtualizarArmazem extends JFrame {
     private JLabel lbIDMedida;
     private JScrollPane TabelaSP;
     private JPanel painel;
+    private JComboBox cbProdutos;
+    private JButton btAdicionar;
     private DefaultTableModel model;
 
     public AtualizarArmazem(Empregado emp) {
@@ -32,6 +34,7 @@ public class AtualizarArmazem extends JFrame {
         ArrayList<Medida> medidas = veMedida();
         tfQtd.setText("0");
         ArrayList<Stock> stocks = veStock();
+        ArrayList<Produto> produtos = veProdutos();
         criaTabela(stocks);
         //meter janela visivel
         setVisible(true);
@@ -64,7 +67,12 @@ public class AtualizarArmazem extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 int index = Tabela.getSelectedRow();
-                lbProduto.setText("Produto:\t  " + stocks.get(index).getDesignacao());
+                lbProduto.setText("Produto:");
+                for (Produto p : produtos){
+                    if(p.getNome().equals(stocks.get(index).getDesignacao())){
+                        cbProdutos.getModel().setSelectedItem(p.getNome());
+                    }
+                }
                 tfQtd.setText(String.valueOf(stocks.get(index).getQtd()));
                 for (Medida m : medidas) {
                     if (m.getIdMedida() == stocks.get(index).getIDMedida()) {
@@ -73,8 +81,40 @@ public class AtualizarArmazem extends JFrame {
                 }
             }
         });
+        //Adicionar se nao tiver la o produto
+        btAdicionar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int i = 0;
+                int ultimoid = 0;
+                    for(Stock s : stocks){
+                        if(cbProdutos.getSelectedItem().equals(s.getDesignacao())){
+                            i = 1;
+                        }
+                         ultimoid = s.getIDStock();
+                    }
 
+                if(i==1){
+                    JOptionPane.showMessageDialog(null, "Já existe esse produto no stock!", "Erro ao adicionar produto", JOptionPane.ERROR_MESSAGE);
+                }
+                else{
+                    ultimoid++;
+                    for (Produto p : produtos){
+                        if(cbProdutos.getSelectedItem().equals(p.getNome())){
+                           for (Medida m : medidas){
+                               if (cbMedidas.getSelectedItem().equals(m.getDesignacao())){
+                                   Stock s = new Stock(ultimoid,p.getId(), p.getNome(), Integer.parseInt(tfQtd.getText()), m.getIdMedida() );
+                                   Funcoes.setDataorDelete("Adicionou com sucesso!", "INSERT INTO TblStock\n" +
+                                           "VALUES ("+ultimoid+", "+ Integer.parseInt(tfQtd.getText()) +", " + p.getId() + "," + m.getIdMedida() + ", " + 1 +");");
+                                   stocks.add(s);
+                               }
+                           }
+                        }
+                    }
 
+                    criaTabela(stocks);
+                }
+            }
+        });
         //Eliminar vai apagar a linha
         // Vai buscar a linha ver se não é -1 e se nao for -1 apaga
         bEliminar.addActionListener(new ActionListener() {
@@ -98,6 +138,7 @@ public class AtualizarArmazem extends JFrame {
                 diz.setLocationRelativeTo(null);
             }
         });
+
 
     }
 
@@ -156,5 +197,30 @@ public class AtualizarArmazem extends JFrame {
 
         Tabela.setModel(model);
 
+    }
+
+    public ArrayList<Produto> veProdutos(){
+        ArrayList<Produto> produtos = new ArrayList<>();
+        try {
+            //ir buscar os produtos para os adicionar no combobox
+            ResultSet rs = Funcoes.getDataF("SELECT * From TblProduto");
+
+            while (rs.next()) {
+                Produto p = new Produto();
+                p.setId(rs.getInt("IDProduto"));
+                p.setNome(rs.getString("Designacao"));
+                p.setPreco_venda(rs.getDouble("Preco_venda"));
+                p.setPreco_compra(rs.getDouble("Preco_Compra"));
+                produtos.add(p);
+            }
+            for (Produto produto : produtos) {
+                cbProdutos.addItem(produto.getNome());
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e, "Pedido, adicionar a Combo", JOptionPane.ERROR_MESSAGE);
+        }
+
+        return produtos;
     }
 }

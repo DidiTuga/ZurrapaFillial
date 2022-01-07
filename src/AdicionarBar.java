@@ -40,10 +40,10 @@ public class AdicionarBar extends JFrame {
         ArrayList<Stock> stocks = veStock(verificaLocal(locais).getIdLocal());
 
         //STOCKS DO ARMAZEM
-        ArrayList<Stock> stocksA = veStock(1);
+        final ArrayList<Stock>[] stocksA = new ArrayList[]{veStock(1)};
         //cria tabela com o stock que esta acontecer
         criaTabela(stocks);
-        atualizaQtd(stocksA);
+        atualizaQtd(stocksA[0]);
         setVisible(true);
 
         //botao de sair
@@ -57,7 +57,8 @@ public class AdicionarBar extends JFrame {
         // quando mudam os produtos atualiza a qtd dos produtos
         cbProdutos.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                atualizaQtd(stocksA);
+                stocksA[0] = veStock(1);
+                atualizaQtd(stocksA[0]);
             }
         });
         //Quando mudam o local é preciso atualizar a tabela
@@ -72,7 +73,7 @@ public class AdicionarBar extends JFrame {
         bTransferir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int qtd = Integer.parseInt(tfQtdD.getText());
-                int qtdA = atualizaQtd(stocksA);
+                int qtdA = atualizaQtd(stocksA[0]);
                 if(qtd>0 && qtd <= qtdA){
                     int local = verificaLocal(locais).getIdLocal();
                     int index = 0;
@@ -97,7 +98,8 @@ public class AdicionarBar extends JFrame {
                             "\nWHERE IDlocal = " + local +
                             "\nand IDProduto = "+ stocks.get(index).getIDProduto());
                     criaTabela(veStock(local));
-                    atualizaQtd(veStock(1));
+                    stocksA[0] =veStock(1);
+                    atualizaQtd(stocksA[0]);
                 }
                 else{
                     JOptionPane.showMessageDialog(null , "A quantidade tem que ser maior que 0 e menor ou igual ao valor do armazém!", "WARNING", JOptionPane.WARNING_MESSAGE);

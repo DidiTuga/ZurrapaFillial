@@ -2,17 +2,18 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class HubArmazem extends JFrame{
+public class HubArmazem extends JFrame {
     private JPanel painelP;
     private JButton btASArmazem;
     private JButton btCTSBar;
     private JButton btSair;
     private JLabel lbTexto;
+    private JButton btEstatisticas;
 
-    public HubArmazem(Empregado emp){
+    public HubArmazem(Empregado emp) {
         setContentPane(painelP);
         setTitle("Hub do Armazem");
-        setSize(400, 300);
+        setSize(420, 350);
         setResizable(false); //Assim nao se pode mudar o tamanho
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //clicar no x para fechar
         lbTexto.setText("Bem-vindo " + emp.getNome() + ".\n");
@@ -29,9 +30,17 @@ public class HubArmazem extends JFrame{
         //Adicionar stock do bar e tirar do armazem
         btCTSBar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            dispose();
-            AdicionarBar bb = new AdicionarBar(emp);
-            bb.setLocationRelativeTo(null);
+                dispose();
+                AdicionarBar bb = new AdicionarBar(emp);
+                bb.setLocationRelativeTo(null);
+            }
+        });
+
+        //Estatisticas abre uma janela
+        btEstatisticas.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Estatistica esta = new Estatistica();
+                esta.setLocationRelativeTo(null);
             }
         });
 

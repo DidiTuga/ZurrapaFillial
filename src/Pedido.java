@@ -52,9 +52,7 @@ public class Pedido extends JFrame {
         //Colocar os produtos que existem no combobox
         try {
             //ir buscar os produtos para os adicionar no combobox
-            String sql = "SELECT * From TblProduto";
-            PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+            ResultSet rs = Funcoes.getDataF("SELECT * From TblProduto");
 
             while (rs.next()) {
                 Produto p = new Produto();

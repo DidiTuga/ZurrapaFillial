@@ -43,6 +43,17 @@ public class Funcoes {
             return null;
         }
     }
+    public static ResultSet getDataS(String query) {
+        try {
+            Connection con = Conectar.getConSede();
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            return rs;
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e, "getDataS", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+    }
 
     public static boolean verStock(int quantidade, Produto p, int idlocal) {
         boolean valor = false;
