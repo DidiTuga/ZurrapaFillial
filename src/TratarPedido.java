@@ -88,7 +88,7 @@ public class TratarPedido extends JFrame {
                     if (valor <= tmp.getQuantidade_pedida()) {
                         tmp.setQuantidade_servida(valor);
                         criaTabela(pfechar);
-                        Funcoes.setDataorDelete("Mudar o valor da QTD do Pedido",
+                        Funcoes.setDataorDelete("Alterado com sucesso!",
                                 " UPDATE TblConteudoPedido\n" +
                                         "Set Quantidade_Servida =" + valor +
                                         "\nWHERE IDProduto = " + tmp.getIdProduto() +
@@ -111,8 +111,7 @@ public class TratarPedido extends JFrame {
                     ConteudoPedido tmp = pfechar.get(index); //FUNCIONA COMO UM APONTADOR
                     if (verificaPedido(pfechar, index)) {
                         String update = "UPDATE TblPedido\n" + "Set Estado = 1" + "\nWHERE IDPedido = " + tmp.getIdPedido() + "\nAND IDLocal =" + local.getIdLocal();
-                        Funcoes.setDataorDelete("Meter o valor estado = 1", update);
-                        JOptionPane.showMessageDialog(null, "Pedido fechado com sucesso!", "Ação feita com sucesso", JOptionPane.INFORMATION_MESSAGE);
+                        Funcoes.setDataorDelete("Pedido fechado com sucesso!", update);
 
                         //Voltar para o hub pois o pedido ja foi fechado
 

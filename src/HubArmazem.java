@@ -26,6 +26,15 @@ public class HubArmazem extends JFrame{
                 aa.setLocationRelativeTo(null);
             }
         });
+        //Adicionar stock do bar e tirar do armazem
+        btCTSBar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            dispose();
+            AdicionarBar bb = new AdicionarBar(emp);
+            bb.setLocationRelativeTo(null);
+            }
+        });
+
 
         //sair
         btSair.addActionListener(new ActionListener() {
@@ -33,9 +42,9 @@ public class HubArmazem extends JFrame{
                 dispose();
                 login login = new login();
                 login.setLocationRelativeTo(null);
-
             }
         });
+
 
     }
 }

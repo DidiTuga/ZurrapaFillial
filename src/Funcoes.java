@@ -27,7 +27,7 @@ public class Funcoes {
                 JOptionPane.showMessageDialog(null, msg);
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, "A caixa já foi fechada hoje!", "Erro ao fechar caixa", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, "Não pode fechar a caixa duas vezes no mesmo dia.", "Erro ao fechar caixa", JOptionPane.ERROR_MESSAGE);
         }
 
     }

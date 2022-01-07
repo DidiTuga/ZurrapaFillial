@@ -51,4 +51,14 @@ public class Stock {
     public void setIDMedida(int IDMedida) {
         this.IDMedida = IDMedida;
     }
+
+    public String toString() {
+        return "Stock{" +
+                "IDStock=" + IDStock +
+                ", IDProduto=" + IDProduto +
+                ", Qtd=" + Qtd +
+                ", IDMedida=" + IDMedida +
+                ", Designacao='" + Designacao + '\'' +
+                '}';
+    }
 }

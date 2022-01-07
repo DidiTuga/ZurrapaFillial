@@ -44,14 +44,14 @@ public class AtualizarArmazem extends JFrame {
                     JOptionPane.showMessageDialog(null, "Tem que selecionar uma linha!", "Eliminar Stock", JOptionPane.WARNING_MESSAGE);
                 } else {
                     int qtd = Integer.parseInt(tfQtd.getText());
-                    for(Medida m : medidas){
-                        if(m.getDesignacao().equals(cbMedidas.getSelectedItem())){
+                    for (Medida m : medidas) {
+                        if (m.getDesignacao().equals(cbMedidas.getSelectedItem())) {
                             stocks.get(index).setIDMedida(m.getIdMedida());
                         }
                     }
                     stocks.get(index).setQtd(qtd);
                     Funcoes.setDataorDelete("Atualizei com sucesso a linha", "Update TblStock\n" +
-                            "Set Quantidade = "+ stocks.get(index).getQtd() + ", IDMedida = " + stocks.get(index).getIDMedida() +
+                            "Set Quantidade = " + stocks.get(index).getQtd() + ", IDMedida = " + stocks.get(index).getIDMedida() +
                             "\nWHERE IDStock = " + stocks.get(index).getIDStock());
                     criaTabela(stocks);
                 }
@@ -66,8 +66,8 @@ public class AtualizarArmazem extends JFrame {
                 int index = Tabela.getSelectedRow();
                 lbProduto.setText("Produto:\t  " + stocks.get(index).getDesignacao());
                 tfQtd.setText(String.valueOf(stocks.get(index).getQtd()));
-                for(Medida m : medidas){
-                    if(m.getIdMedida() == stocks.get(index).getIDMedida()){
+                for (Medida m : medidas) {
+                    if (m.getIdMedida() == stocks.get(index).getIDMedida()) {
                         cbMedidas.getModel().setSelectedItem(m.getDesignacao());
                     }
                 }

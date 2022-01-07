@@ -149,7 +149,7 @@ public class Pedido extends JFrame {
         bTerminar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // SUBMETER O PEDIDO COM O IDLOCAL E EMPREGADO E ESTADO 0 POIS DEPOIS VAI PARA O PROCESSAMENTO
-                Funcoes.setDataorDelete("Pedido Colocado com sucesso!", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
+                Funcoes.setDataorDelete("Pedido registado com sucesso!", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
                         "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + local.getIdLocal() + ");"); //ONDE ESTA O 2 é para meter o do localZ
 
 
@@ -158,7 +158,7 @@ public class Pedido extends JFrame {
 
                         try {
                         int quantidade=0;
-                        Funcoes.setDataorDelete("ContuedoPedido Colocado com sucesso!", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida)\n" +
+                        Funcoes.setDataorDelete("", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida)\n" +
                                 "VALUES(" + ultimoId + ", " + y.getId() + ", " + y.quantidade + ", " + 0 + ");");
                             //VER SE VOU RETIRAR AO ARMAZEM OU SE TIRO NA LOJA
                             // ATRAVES DAQUELE QUE TEM QUANTIDADE
@@ -168,7 +168,7 @@ public class Pedido extends JFrame {
                         }
                         if (quantidade>y.getQuantidade()){
                             quantidade -= y.getQuantidade();
-                            Funcoes.setDataorDelete("Está servido!!",
+                            Funcoes.setDataorDelete("",
                                     "Update TblStock\n"
                                             + "SET Quantidade=" + quantidade + ", "
                                             + "IDMedida = " + 1
@@ -188,7 +188,7 @@ public class Pedido extends JFrame {
                                 quantidade = (rip.getInt("Quantidade") * rip.getInt("ConversaoAPB"));
                             }
                             quantidade -= y.getQuantidade();
-                            Funcoes.setDataorDelete("A sair do armazém!!",
+                            Funcoes.setDataorDelete("",
                                     "Update TblStock\n"
                                             + "SET Quantidade=" + quantidade + ", "
                                             + "IDMedida = 1"
@@ -196,7 +196,7 @@ public class Pedido extends JFrame {
                                             + "\nAND IDLocal = 1");
                         }
                     }                catch (SQLException x){
-                            JOptionPane.showMessageDialog(null, x, "Message6", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(null, x, "Terminar Pedido", JOptionPane.ERROR_MESSAGE);
                         }
                 }
                 dispose();
