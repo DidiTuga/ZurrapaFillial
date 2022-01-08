@@ -83,10 +83,10 @@ public class Hub extends JFrame {
                                 //APAGAR TUDO
                                 Funcoes.setDataorDelete("Caixa Fechada com Sucesso!", "DELETE From TblConteudoPedido\n" +
                                         "DELETE FROM TblPedido");
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Tem de ser o responsável para fechar caixa", "Fechar Caixa", JOptionPane.WARNING_MESSAGE);
                             }
                         }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Tem de ser o responsável para fechar caixa", "Fechar Caixa", JOptionPane.WARNING_MESSAGE);
                     }
                 } catch (SQLException x) {
                     JOptionPane.showMessageDialog(null, x, "Deu Erro ao ler no Fechar Caixa", JOptionPane.ERROR_MESSAGE);

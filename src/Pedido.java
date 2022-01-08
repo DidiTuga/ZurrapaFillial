@@ -147,7 +147,8 @@ public class Pedido extends JFrame {
         bTerminar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // SUBMETER O PEDIDO COM O IDLOCAL E EMPREGADO E ESTADO 0 POIS DEPOIS VAI PARA O PROCESSAMENTO
-                Funcoes.setDataorDelete("Pedido registado com sucesso!", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
+                JOptionPane.showMessageDialog(null, "Tem de pagar: " + preco[0] + "€","Preço",JOptionPane.INFORMATION_MESSAGE );
+                Funcoes.setDataorDelete("", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
                         "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + local.getIdLocal() + ");"); //ONDE ESTA O 2 é para meter o do localZ
 
 
