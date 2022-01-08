@@ -30,6 +30,7 @@ public class AtualizarArmazem extends JFrame {
         setSize(500, 400);
         setResizable(false); //Assim nao se pode mudar o tamanho
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //clicar no x para fechar
+        setLocationRelativeTo(null);
         //Inicialiar variaveis/texto
         ArrayList<Medida> medidas = veMedida();
         tfQtd.setText("0");

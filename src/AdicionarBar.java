@@ -31,6 +31,7 @@ public class AdicionarBar extends JFrame {
         setSize(650, 450);
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
         //Dar valores as variaveis
         tfQtdD.setText("0");
@@ -51,7 +52,6 @@ public class AdicionarBar extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 HubArmazem diz = new HubArmazem(emp);
-                diz.setLocationRelativeTo(null);
             }
         });
         // quando mudam os produtos atualiza a qtd dos produtos

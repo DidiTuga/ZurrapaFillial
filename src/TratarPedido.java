@@ -33,6 +33,7 @@ public class TratarPedido extends JFrame {
         setSize(600, 500);
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
         //Editar as caixas de texto
         lbPedidosA.setText("Pedidos em Aberto");
         nEmpregado.setText("Olá, " + emp.getNome() + ". Encontra-se no " + local.getNome() + ".");
@@ -51,7 +52,6 @@ public class TratarPedido extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 Hub ola = new Hub(emp, local);
-                ola.setLocationRelativeTo(null);
             }
         });
 
@@ -85,7 +85,7 @@ public class TratarPedido extends JFrame {
                     int valor = Integer.parseInt(tfQuantidadeS.getText());
 
                     ConteudoPedido tmp = pfechar.get(index); //FUNCIONA COMO UM APONTADOR
-                    if (tmp.getQuantidade_pedida() > 0 && valor <= tmp.getQuantidade_pedida()) {
+                    if (tmp.getQuantidade_pedida() > 0 && valor <= tmp.getQuantidade_pedida() && valor > 0) {
                         tmp.setQuantidade_servida(valor);
                         criaTabela(pfechar);
                         Funcoes.setDataorDelete("Alterado com sucesso!",
@@ -94,7 +94,7 @@ public class TratarPedido extends JFrame {
                                         "\nWHERE IDProduto = " + tmp.getIdProduto() +
                                         "\nand IDPedido = " + tmp.getIdPedido());
                     } else {
-                        JOptionPane.showMessageDialog(null, "Não pode colocar um valor acima da quantidade pedida.", "AVISO na Quantidade Servida", JOptionPane.WARNING_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Não pode colocar um valor acima da quantidade pedida ou um número inferior a 0.", "AVISO na Quantidade Servida", JOptionPane.WARNING_MESSAGE);
                     }
                 }
             }

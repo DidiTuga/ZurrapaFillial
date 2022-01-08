@@ -38,6 +38,7 @@ public class Pedido extends JFrame {
         setSize(450, 450);
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
 
         //Escrever  nas labels
         nEmpregado.setText("Olá " + emp.getNome() + ". Está no "+ local.getNome() + ".");
@@ -137,7 +138,6 @@ public class Pedido extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 Hub hub = new Hub(emp, local);
-                hub.setLocationRelativeTo(null);
             }
         });
 

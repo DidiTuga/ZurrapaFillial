@@ -19,6 +19,7 @@ public class Hub extends JFrame {
         setResizable(false); //Assim nao se pode mudar o tamanho
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //clicar no x para fechar
         nEmpregado.setText("Bem-vindo " + emp.getNome() + ".\n Encontra-se no " + local.getNome() + ".");
+        setLocationRelativeTo(null);
         setVisible(true);
 
 
@@ -27,7 +28,6 @@ public class Hub extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 Pedido pedido = new Pedido(emp, local);
-                pedido.setLocationRelativeTo(null);
             }
         });
 
@@ -36,7 +36,6 @@ public class Hub extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 TratarPedido tp = new TratarPedido(emp, local);
-                tp.setLocationRelativeTo(null);
             }
         });
 
@@ -100,7 +99,6 @@ public class Hub extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 login inicio = new login();
-                inicio.setLocationRelativeTo(null);
             }
         });
 

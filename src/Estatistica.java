@@ -27,6 +27,7 @@ public class Estatistica extends JFrame {
         ArrayList<barEuros> datas = veData(locais);
         //meter janela visivel
         atualizaValores(datas, locais);
+        setLocationRelativeTo(null);
         setVisible(true);
 
 

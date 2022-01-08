@@ -12,7 +12,6 @@ public class ZurrapaFillial {
         JFrame.setDefaultLookAndFeelDecorated(true);
 
         login _Frame = new login();
-        _Frame.setLocationRelativeTo(null);
     }
 
 

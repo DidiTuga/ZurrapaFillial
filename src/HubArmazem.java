@@ -17,6 +17,7 @@ public class HubArmazem extends JFrame {
         setResizable(false); //Assim nao se pode mudar o tamanho
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //clicar no x para fechar
         lbTexto.setText("Bem-vindo " + emp.getNome() + ".\n");
+        setLocationRelativeTo(null);
         setVisible(true);
 
         //Atualizar Stock no Armazem
@@ -24,7 +25,6 @@ public class HubArmazem extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 AtualizarArmazem aa = new AtualizarArmazem(emp);
-                aa.setLocationRelativeTo(null);
             }
         });
         //Adicionar stock do bar e tirar do armazem
@@ -32,7 +32,6 @@ public class HubArmazem extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 AdicionarBar bb = new AdicionarBar(emp);
-                bb.setLocationRelativeTo(null);
             }
         });
 
@@ -40,7 +39,6 @@ public class HubArmazem extends JFrame {
         btEstatisticas.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Estatistica esta = new Estatistica();
-                esta.setLocationRelativeTo(null);
             }
         });
 
@@ -50,7 +48,6 @@ public class HubArmazem extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 dispose();
                 login login = new login();
-                login.setLocationRelativeTo(null);
             }
         });
 

@@ -24,6 +24,7 @@ public class login extends JFrame {
         setSize(400, 250);                           // Define tamanho
         setResizable(false);                                     // Define alteracao de tamanho
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // Define fechar tudo ao fechar a janela
+        setLocationRelativeTo(null);
 
         ArrayList<Local> Locais = new ArrayList<>();
 
@@ -73,11 +74,9 @@ public class login extends JFrame {
                         if(local.getIdLocal()==1){ // se ele selecionar o armazem aparece o menu armazem
                             HubArmazem armazem = new HubArmazem(empregadoAtual);
                             dispose();
-                            armazem.setLocationRelativeTo(null);
                         }else { // se ele selecionar outro sem ser o armazem vai o outro
                             Hub hub_Gestao = new Hub(empregadoAtual, local);
                             dispose(); // Fecha Janela Atual
-                            hub_Gestao.setLocationRelativeTo(null);
                         }
                     } else {
                         JOptionPane.showMessageDialog(null, "Os dados que colocou estavam errados!");
