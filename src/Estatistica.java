@@ -120,6 +120,7 @@ public class Estatistica extends JFrame {
             //IR BUSCAR A SITUACAO CORRENTE
             cbData.addItem("Situação Corrente");
             for (Local l : locais) {
+                double preçocusto = 0;
                 ResultSet rsd = Funcoes.getDataF("Select s.Quantidade, p.IDProduto, P.Preco_Compra, c.ConversaoAPB\n" +
                         "From TblStock s, TblProduto p, TblMedida m, TblConversao c\n" +
                         "WHere s.IDProduto = p.IDProduto\n" +
@@ -127,10 +128,10 @@ public class Estatistica extends JFrame {
                         "and m.IDMedida = c.IDMedidaA\n"
                         + "and IDLocal = " + l.getIdLocal());
                 while (rsd.next()) {
-                    double preçocusto = rsd.getInt("Quantidade") * rsd.getInt("ConversaoAPB") * rsd.getDouble("Preco_Compra");
-                    barEuros b = new barEuros("Situação Corrente", l.getIdLocal(), 0, preçocusto);
-                    datas.add(b);
+                    preçocusto += rsd.getInt("Quantidade") * rsd.getInt("ConversaoAPB") * rsd.getDouble("Preco_Compra");
                 }
+                barEuros b = new barEuros("Situação Corrente", l.getIdLocal(), 0, preçocusto);
+                datas.add(b);
             }
 
 
