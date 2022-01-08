@@ -85,7 +85,7 @@ public class TratarPedido extends JFrame {
                     int valor = Integer.parseInt(tfQuantidadeS.getText());
 
                     ConteudoPedido tmp = pfechar.get(index); //FUNCIONA COMO UM APONTADOR
-                    if (valor <= tmp.getQuantidade_pedida()) {
+                    if (tmp.getQuantidade_pedida() > 0 && valor <= tmp.getQuantidade_pedida()) {
                         tmp.setQuantidade_servida(valor);
                         criaTabela(pfechar);
                         Funcoes.setDataorDelete("Alterado com sucesso!",

@@ -54,27 +54,40 @@ public class Hub extends JFrame {
                     }
 
                     if (id == emp.getId()) {
-                        if (JOptionPane.showConfirmDialog(null, "Tem a certeza que quer fechar caixa?", "Fechar Caixa",
-                                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-                            // FEcho loja
-                            ResultSet rip = Funcoes.getDataF("Select pr.IDProduto, Quantidade_Pedida, pr.Preco_Compra, pr.Preco_Venda \n" +
-                                    "From TblPedido p, TblConteudoPedido cp, TblProduto pr\n" +
-                                    "WHERE p.IDPedido = cp.IDPedido\n" +
-                                    "and IDLocal = " + local.getIdLocal() +
-                                    "\nand cp.IDProduto = pr.IDProduto\n");
-                            while (rip.next()) { //Vai ver quando gastos e ganhos houve
-                                totalganhos += rip.getInt("Quantidade_Pedida") * rip.getDouble("Preco_Venda");
-                                totalgastos += rip.getInt("Quantidade_Pedida") * rip.getDouble("Preco_Compra");
+                        int verifica = 0;
+                        ResultSet rsd = Funcoes.getDataF("Select * From TblPedido");
+                        while (rsd.next()) {
+                            if (rsd.getInt("Estado") != 1) {
+                                verifica = 1;
                             }
-                            //Manda os dados para a tabela
-                            String query = "INSERT INTO TblFilialDiaBar(DataDia, Lucro, Despesa, IDBar, IDFilial)\n Values(GETDATE(), " + totalganhos + ", " + totalgastos + ", " + local.getIdLocal() + ", 1);";
-                            Funcoes.setDataorDeleteS("", query);
-                            //APAGAR TUDO
-                            Funcoes.setDataorDelete("Caixa Fechada com Sucesso!", "DELETE From TblConteudoPedido\n" +
-                                    "DELETE FROM TblPedido");
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Tem de ser o responsável para fechar caixa", "Fechar Caixa", JOptionPane.WARNING_MESSAGE);
+                        if (verifica == 1) {
+                            JOptionPane.showMessageDialog(null, "Tem que fechar todos os pedidos primeiro!", "Erro ao fechar caixa", JOptionPane.WARNING_MESSAGE);
+                        } else {
+
+
+                            if (JOptionPane.showConfirmDialog(null, "Tem a certeza que quer fechar caixa?", "Fechar Caixa",
+                                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                                // FEcho loja
+                                ResultSet rip = Funcoes.getDataF("Select pr.IDProduto, Quantidade_Pedida, pr.Preco_Compra, pr.Preco_Venda \n" +
+                                        "From TblPedido p, TblConteudoPedido cp, TblProduto pr\n" +
+                                        "WHERE p.IDPedido = cp.IDPedido\n" +
+                                        "and IDLocal = " + local.getIdLocal() +
+                                        "\nand cp.IDProduto = pr.IDProduto\n");
+                                while (rip.next()) { //Vai ver quando gastos e ganhos houve
+                                    totalganhos += rip.getInt("Quantidade_Pedida") * rip.getDouble("Preco_Venda");
+                                    totalgastos += rip.getInt("Quantidade_Pedida") * rip.getDouble("Preco_Compra");
+                                }
+                                //Manda os dados para a tabela
+                                String query = "INSERT INTO TblFilialDiaBar(DataDia, Lucro, Despesa, IDBar, IDFilial)\n Values(GETDATE(), " + totalganhos + ", " + totalgastos + ", " + local.getIdLocal() + ", 1);";
+                                Funcoes.setDataorDeleteS("", query);
+                                //APAGAR TUDO
+                                Funcoes.setDataorDelete("Caixa Fechada com Sucesso!", "DELETE From TblConteudoPedido\n" +
+                                        "DELETE FROM TblPedido");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Tem de ser o responsável para fechar caixa", "Fechar Caixa", JOptionPane.WARNING_MESSAGE);
+                            }
+                        }
                     }
                 } catch (SQLException x) {
                     JOptionPane.showMessageDialog(null, x, "Deu Erro ao ler no Fechar Caixa", JOptionPane.ERROR_MESSAGE);
