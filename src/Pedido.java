@@ -3,7 +3,6 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -15,7 +14,7 @@ public class Pedido extends JFrame {
     private JLabel lbProduto;
     private JComboBox CbProdutos;
     private JButton bAdicionar;
-    private JLabel lbPreço;
+    private JLabel lbPreco;
     private JLabel nEmpregado;
     private JFormattedTextField tfQuantidade;
     private JButton bCancelar;
@@ -242,7 +241,7 @@ public class Pedido extends JFrame {
 
                 tmp = preco + p.getPreco_venda() * Integer.parseInt(tfQuantidade.getText());
                 String resultado = String.format("Preço individual: %.2f€  Preço Total: %.2f€", p.getPreco_venda(), tmp);
-                lbPreço.setText(resultado);
+                lbPreco.setText(resultado);
             }
         }
     }

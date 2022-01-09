@@ -22,6 +22,7 @@ public class TratarPedido extends JFrame {
     private JLabel lbPedidosA;
     private JButton bSair;
     private JLabel lbProduto;
+    private JButton btCancelarPedido;
     //Definir variaveis
     private ArrayList<ConteudoPedido> pfechar = new ArrayList<>();
     private ArrayList<Produto> produtos = new ArrayList<>();
@@ -70,6 +71,7 @@ public class TratarPedido extends JFrame {
                 }
                 balterarQtd.setEnabled(true);
                 bfecharPedido.setEnabled(true);
+                btCancelarPedido.setEnabled(true);
             }
         });
 
@@ -117,13 +119,56 @@ public class TratarPedido extends JFrame {
 
                         dispose();
                         Hub zamal = new Hub(emp, local);
-                        zamal.setLocationRelativeTo(null);
                     }
                     else {
                         JOptionPane.showMessageDialog(null, "Para fechar o pedido, as quantidades do(s) produto(s) têm de ser iguais.", "AVISO na Quantidade Servida", JOptionPane.WARNING_MESSAGE);
                     }
 
                 }
+            }
+        });
+        //
+        btCancelarPedido.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int index = Pedidos.getSelectedRow();
+                if (index == -1) {
+                    JOptionPane.showMessageDialog(null, "Tem que selecionar uma linha da tabela.", "AVISO", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    int eliminar = pfechar.get(index).getIdPedido();
+                    ArrayList<ConteudoPedido> tmp= new ArrayList<>();
+                    for(int i = 0; i<pfechar.size(); i++){
+                        if(eliminar == pfechar.get(i).getIdPedido()){
+                            tmp.add(pfechar.get(i));
+                            pfechar.remove(i);
+                        }
+                    }
+                    Funcoes.setDataorDelete("Pedido Eliminado com sucesso!", "DELETE From TblConteudoPedido WHERE IDPedido =" + eliminar +
+                            "\nDELETE FROM TblPedido WHERE IDPedido = "+eliminar);
+
+                for (ConteudoPedido c : tmp){
+                    int qtd = 0;
+                    try{
+
+                        ResultSet rs = Funcoes.getDataF("Select Quantidade\n" +
+                                "From TblStock\n" +
+                                "WHERE IDLocal = "+local.getIdLocal() +"\n" +
+                                "AND IDProduto = "+ c.getIdProduto() );
+                        if(rs.next()){
+                            qtd = rs.getInt("Quantidade");
+                        }
+                    }catch(SQLException y){
+                        JOptionPane.showMessageDialog(null, y, "Nao consegui ir buscar a quantidade", JOptionPane.ERROR_MESSAGE);
+                    }
+                    qtd += c.getQuantidade_pedida();
+                    Funcoes.setDataorDelete("", "UPDATE TblStock\n"+
+                                                        "SET Quantidade = " + qtd
+                                                        +"\n WHERE IDLocal = "+ local.getIdLocal()
+                                                        +"AND IDProduto = " + c.getIdProduto());
+
+                }
+                criaTabela(pfechar);
+                }
+
             }
         });
     }
