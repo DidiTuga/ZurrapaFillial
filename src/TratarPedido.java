@@ -127,28 +127,31 @@ public class TratarPedido extends JFrame {
                 }
             }
         });
-        //
+        //cancelar pedido
         btCancelarPedido.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int index = Pedidos.getSelectedRow();
+                //Verifica se esta alguma coisa selecionada
                 if (index == -1) {
                     JOptionPane.showMessageDialog(null, "Tem que selecionar uma linha da tabela.", "AVISO", JOptionPane.WARNING_MESSAGE);
                 } else {
+                    //Guarda os conteudos pedidos com o id do selecionado
                     int eliminar = pfechar.get(index).getIdPedido();
                     ArrayList<ConteudoPedido> tmp= new ArrayList<>();
                     for(int i = 0; i<pfechar.size(); i++){
                         if(eliminar == pfechar.get(i).getIdPedido()){
-                            tmp.add(pfechar.get(i));
-                            pfechar.remove(i);
+                            tmp.add((ConteudoPedido) pfechar.get(i).clone());
                         }
+
                     }
+                    //eliminada tudo do pedido na base de dados
                     Funcoes.setDataorDelete("Pedido Eliminado com sucesso!", "DELETE From TblConteudoPedido WHERE IDPedido =" + eliminar +
                             "\nDELETE FROM TblPedido WHERE IDPedido = "+eliminar);
 
                 for (ConteudoPedido c : tmp){
                     int qtd = 0;
                     try{
-
+                        //vai buscar a quantidade do produto que o stock ja tinha
                         ResultSet rs = Funcoes.getDataF("Select Quantidade\n" +
                                 "From TblStock\n" +
                                 "WHERE IDLocal = "+local.getIdLocal() +"\n" +
@@ -160,12 +163,15 @@ public class TratarPedido extends JFrame {
                         JOptionPane.showMessageDialog(null, y, "Nao consegui ir buscar a quantidade", JOptionPane.ERROR_MESSAGE);
                     }
                     qtd += c.getQuantidade_pedida();
+                    //soma a quantidade com a quantidade devolvida e da update na base de dados
                     Funcoes.setDataorDelete("", "UPDATE TblStock\n"+
                                                         "SET Quantidade = " + qtd
                                                         +"\n WHERE IDLocal = "+ local.getIdLocal()
                                                         +"AND IDProduto = " + c.getIdProduto());
 
                 }
+                //vai buscar novamente a informacao se esta algum pedido em aberto e atualiza a tabela
+                pfechar = atualizaDados(local.getIdLocal());
                 criaTabela(pfechar);
                 }
 
