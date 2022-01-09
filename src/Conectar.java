@@ -12,15 +12,16 @@ public class Conectar {
             return null;
         }
     }
+
     //ainda nao foi utilizada
-        public static Connection getConSede() {
-            try {
-                String url = "jdbc:sqlserver://DESKTOP-UJ26N4k\\SQLEXPRESS;databaseName=ZurrapaSede;integratedSecurity=true";
-                Connection connection = DriverManager.getConnection(url);
-                return connection;
-            } catch (SQLException e) {
-                return null;
-            }
+    public static Connection getConSede() {
+        try {
+            String url = "jdbc:sqlserver://DESKTOP-UJ26N4k\\SQLEXPRESS;databaseName=ZurrapaSede;integratedSecurity=true";
+            Connection connection = DriverManager.getConnection(url);
+            return connection;
+        } catch (SQLException e) {
+            return null;
+        }
     }
 
 }

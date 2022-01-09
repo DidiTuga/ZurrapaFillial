@@ -2,7 +2,8 @@ public class Medida {
     private int idMedida;
     private String Designacao;
     private int conversao;
-    public Medida(int idMedida, String Designacao){
+
+    public Medida(int idMedida, String Designacao) {
         this.idMedida = idMedida;
         this.Designacao = Designacao;
         this.conversao = 0;

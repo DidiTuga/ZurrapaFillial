@@ -1,6 +1,6 @@
 public class barEuros {
-    private  String data;
-    private  int idBar;
+    private String data;
+    private int idBar;
     private double ganhos;
     private double gasto;
 

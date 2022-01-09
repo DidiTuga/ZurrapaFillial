@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import static javax.swing.UIManager.getInt;
-
 public class TratarPedido extends JFrame {
     private JScrollPane PedidosA;
     private DefaultTableModel model;
@@ -119,8 +117,7 @@ public class TratarPedido extends JFrame {
 
                         dispose();
                         Hub zamal = new Hub(emp, local);
-                    }
-                    else {
+                    } else {
                         JOptionPane.showMessageDialog(null, "Para fechar o pedido, as quantidades do(s) produto(s) têm de ser iguais.", "AVISO na Quantidade Servida", JOptionPane.WARNING_MESSAGE);
                     }
 
@@ -137,42 +134,42 @@ public class TratarPedido extends JFrame {
                 } else {
                     //Guarda os conteudos pedidos com o id do selecionado
                     int eliminar = pfechar.get(index).getIdPedido();
-                    ArrayList<ConteudoPedido> tmp= new ArrayList<>();
-                    for(int i = 0; i<pfechar.size(); i++){
-                        if(eliminar == pfechar.get(i).getIdPedido()){
+                    ArrayList<ConteudoPedido> tmp = new ArrayList<>();
+                    for (int i = 0; i < pfechar.size(); i++) {
+                        if (eliminar == pfechar.get(i).getIdPedido()) {
                             tmp.add((ConteudoPedido) pfechar.get(i).clone());
                         }
 
                     }
                     //eliminada tudo do pedido na base de dados
                     Funcoes.setDataorDelete("Pedido Eliminado com sucesso!", "DELETE From TblConteudoPedido WHERE IDPedido =" + eliminar +
-                            "\nDELETE FROM TblPedido WHERE IDPedido = "+eliminar);
+                            "\nDELETE FROM TblPedido WHERE IDPedido = " + eliminar);
 
-                for (ConteudoPedido c : tmp){
-                    int qtd = 0;
-                    try{
-                        //vai buscar a quantidade do produto que o stock ja tinha
-                        ResultSet rs = Funcoes.getDataF("Select Quantidade\n" +
-                                "From TblStock\n" +
-                                "WHERE IDLocal = "+local.getIdLocal() +"\n" +
-                                "AND IDProduto = "+ c.getIdProduto() );
-                        if(rs.next()){
-                            qtd = rs.getInt("Quantidade");
+                    for (ConteudoPedido c : tmp) {
+                        int qtd = 0;
+                        try {
+                            //vai buscar a quantidade do produto que o stock ja tinha
+                            ResultSet rs = Funcoes.getDataF("Select Quantidade\n" +
+                                    "From TblStock\n" +
+                                    "WHERE IDLocal = " + local.getIdLocal() + "\n" +
+                                    "AND IDProduto = " + c.getIdProduto());
+                            if (rs.next()) {
+                                qtd = rs.getInt("Quantidade");
+                            }
+                        } catch (SQLException y) {
+                            JOptionPane.showMessageDialog(null, y, "Nao consegui ir buscar a quantidade", JOptionPane.ERROR_MESSAGE);
                         }
-                    }catch(SQLException y){
-                        JOptionPane.showMessageDialog(null, y, "Nao consegui ir buscar a quantidade", JOptionPane.ERROR_MESSAGE);
-                    }
-                    qtd += c.getQuantidade_pedida();
-                    //soma a quantidade com a quantidade devolvida e da update na base de dados
-                    Funcoes.setDataorDelete("", "UPDATE TblStock\n"+
-                                                        "SET Quantidade = " + qtd
-                                                        +"\n WHERE IDLocal = "+ local.getIdLocal()
-                                                        +"AND IDProduto = " + c.getIdProduto());
+                        qtd += c.getQuantidade_pedida();
+                        //soma a quantidade com a quantidade devolvida e da update na base de dados
+                        Funcoes.setDataorDelete("", "UPDATE TblStock\n" +
+                                "SET Quantidade = " + qtd
+                                + "\n WHERE IDLocal = " + local.getIdLocal()
+                                + "AND IDProduto = " + c.getIdProduto());
 
-                }
-                //vai buscar novamente a informacao se esta algum pedido em aberto e atualiza a tabela
-                pfechar = atualizaDados(local.getIdLocal());
-                criaTabela(pfechar);
+                    }
+                    //vai buscar novamente a informacao se esta algum pedido em aberto e atualiza a tabela
+                    pfechar = atualizaDados(local.getIdLocal());
+                    criaTabela(pfechar);
                 }
 
             }

@@ -4,7 +4,8 @@ public class Stock {
     private int Qtd;
     private int IDMedida;
     private String Designacao;
-    public Stock(int idstock, int idproduto, String Designacao, int qtd, int idmedida){
+
+    public Stock(int idstock, int idproduto, String Designacao, int qtd, int idmedida) {
         this.IDMedida = idmedida;
         this.IDProduto = idproduto;
         this.IDStock = idstock;

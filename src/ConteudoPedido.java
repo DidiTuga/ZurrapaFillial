@@ -1,5 +1,3 @@
-import java.util.Objects;
-
 public class ConteudoPedido {
 
     private int idPedido;
@@ -7,7 +5,7 @@ public class ConteudoPedido {
     private int quantidade_servida;
     private int quantidade_pedida;
 
-    public ConteudoPedido(int idPedido, int idProduto, int quantidade_servida, int quantidade_pedida){
+    public ConteudoPedido(int idPedido, int idProduto, int quantidade_servida, int quantidade_pedida) {
         this.idPedido = idPedido;
         this.idProduto = idProduto;
         this.quantidade_servida = quantidade_servida;
@@ -54,6 +52,7 @@ public class ConteudoPedido {
                 ", quantidade_pedida=" + quantidade_pedida +
                 '}';
     }
+
     public Object clone() {
         ConteudoPedido x = new ConteudoPedido(this.idPedido, this.idProduto, this.quantidade_servida, this.quantidade_pedida);
         return x;

@@ -69,8 +69,8 @@ public class AtualizarArmazem extends JFrame {
                 super.mouseClicked(e);
                 int index = Tabela.getSelectedRow();
                 lbProduto.setText("Produto:");
-                for (Produto p : produtos){
-                    if(p.getNome().equals(stocks.get(index).getDesignacao())){
+                for (Produto p : produtos) {
+                    if (p.getNome().equals(stocks.get(index).getDesignacao())) {
                         cbProdutos.getModel().setSelectedItem(p.getNome());
                     }
                 }
@@ -87,28 +87,27 @@ public class AtualizarArmazem extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int i = 0;
                 int ultimoid = 0;
-                    for(Stock s : stocks){
-                        if(cbProdutos.getSelectedItem().equals(s.getDesignacao())){
-                            i = 1;
-                        }
-                         ultimoid = s.getIDStock();
+                for (Stock s : stocks) {
+                    if (cbProdutos.getSelectedItem().equals(s.getDesignacao())) {
+                        i = 1;
                     }
-
-                if(i==1){
-                    JOptionPane.showMessageDialog(null, "Já existe esse produto no stock!", "Erro ao adicionar produto", JOptionPane.ERROR_MESSAGE);
+                    ultimoid = s.getIDStock();
                 }
-                else{
+
+                if (i == 1) {
+                    JOptionPane.showMessageDialog(null, "Já existe esse produto no stock!", "Erro ao adicionar produto", JOptionPane.ERROR_MESSAGE);
+                } else {
                     ultimoid++;
-                    for (Produto p : produtos){
-                        if(cbProdutos.getSelectedItem().equals(p.getNome())){
-                           for (Medida m : medidas){
-                               if (cbMedidas.getSelectedItem().equals(m.getDesignacao())){
-                                   Stock s = new Stock(ultimoid,p.getId(), p.getNome(), Integer.parseInt(tfQtd.getText()), m.getIdMedida() );
-                                   Funcoes.setDataorDelete("Adicionou com sucesso!", "INSERT INTO TblStock\n" +
-                                           "VALUES ("+ultimoid+", "+ Integer.parseInt(tfQtd.getText()) +", " + p.getId() + "," + m.getIdMedida() + ", " + 1 +");");
-                                   stocks.add(s);
-                               }
-                           }
+                    for (Produto p : produtos) {
+                        if (cbProdutos.getSelectedItem().equals(p.getNome())) {
+                            for (Medida m : medidas) {
+                                if (cbMedidas.getSelectedItem().equals(m.getDesignacao())) {
+                                    Stock s = new Stock(ultimoid, p.getId(), p.getNome(), Integer.parseInt(tfQtd.getText()), m.getIdMedida());
+                                    Funcoes.setDataorDelete("Adicionou com sucesso!", "INSERT INTO TblStock\n" +
+                                            "VALUES (" + ultimoid + ", " + Integer.parseInt(tfQtd.getText()) + ", " + p.getId() + "," + m.getIdMedida() + ", " + 1 + ");");
+                                    stocks.add(s);
+                                }
+                            }
                         }
                     }
 
@@ -200,7 +199,7 @@ public class AtualizarArmazem extends JFrame {
 
     }
 
-    public ArrayList<Produto> veProdutos(){
+    public ArrayList<Produto> veProdutos() {
         ArrayList<Produto> produtos = new ArrayList<>();
         try {
             //ir buscar os produtos para os adicionar no combobox

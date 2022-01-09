@@ -74,7 +74,7 @@ public class AdicionarBar extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 int qtd = Integer.parseInt(tfQtdD.getText());
                 int qtdA = atualizaQtd(stocksA[0]);
-                if(qtd>0 && qtd <= qtdA){
+                if (qtd > 0 && qtd <= qtdA) {
                     int local = verificaLocal(locais).getIdLocal();
                     int index = 0;
                     //ve qual é o produto
@@ -91,18 +91,17 @@ public class AdicionarBar extends JFrame {
                     Funcoes.setDataorDelete("", "UPDATE TblStock\n" +
                             "SET Quantidade = " + qtdNovaArm + ",IDMedida = 1" +
                             "\nWHERE IDlocal = 1\n" +
-                            "and IDProduto = "+ stocks.get(index).getIDProduto());
+                            "and IDProduto = " + stocks.get(index).getIDProduto());
                     //Atualiza tabela do local
                     Funcoes.setDataorDelete("Transfêrencia feita com sucesso!", "UPDATE TblStock\n" +
                             "SET Quantidade = " + qtdNovaLoc +
                             "\nWHERE IDlocal = " + local +
-                            "\nand IDProduto = "+ stocks.get(index).getIDProduto());
+                            "\nand IDProduto = " + stocks.get(index).getIDProduto());
                     criaTabela(veStock(local));
-                    stocksA[0] =veStock(1);
+                    stocksA[0] = veStock(1);
                     atualizaQtd(stocksA[0]);
-                }
-                else{
-                    JOptionPane.showMessageDialog(null , "A quantidade tem que ser maior que 0 e menor ou igual ao valor do armazém!", "WARNING", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "A quantidade tem que ser maior que 0 e menor ou igual ao valor do armazém!", "WARNING", JOptionPane.WARNING_MESSAGE);
                 }
             }
         });
@@ -140,7 +139,7 @@ public class AdicionarBar extends JFrame {
         ArrayList<Medida> medidas = new ArrayList<>();
         try {
             ResultSet rs = Funcoes.getDataF("Select * From TblMedida, TblConversao\n" +
-                                                "WHere IDMedida = IDMedidaB");
+                    "WHere IDMedida = IDMedidaB");
             while (rs.next()) {
                 Medida m = new Medida(rs.getInt("IDMedidaA"), rs.getString("Designacao"));
                 m.setConversao(rs.getInt("ConversaoAPB"));
@@ -208,9 +207,9 @@ public class AdicionarBar extends JFrame {
         int qtd = 0;
         for (Stock p : stocks) {
             if (cbProdutos.getSelectedItem().equals(p.getDesignacao())) {
-                for ( Medida m : Medida()){
-                    if(m.getIdMedida() == p.getIDMedida()){
-                       qtd = p.getQtd() * m.getConversao();
+                for (Medida m : Medida()) {
+                    if (m.getIdMedida() == p.getIDMedida()) {
+                        qtd = p.getQtd() * m.getConversao();
                         lbQtd.setText(String.valueOf(qtd));
                         i = 1;
                     }
@@ -219,7 +218,7 @@ public class AdicionarBar extends JFrame {
 
             }
         }
-        if(i == 0){
+        if (i == 0) {
             lbQtd.setText("Não existe stock");
         }
         return qtd;

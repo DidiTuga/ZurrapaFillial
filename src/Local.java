@@ -3,7 +3,7 @@ public class Local {
     private String Nome;
 
 
-    public Local (int idLocal, String nome){
+    public Local(int idLocal, String nome) {
         this.idLocal = idLocal;
         this.Nome = nome;
     }

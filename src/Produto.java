@@ -23,6 +23,7 @@ public class Produto {
         this.preco_compra = preco_compra;
         this.quantidade = 0;
     }
+
     public Produto(int id, String nome) {
         this.id = id;
         this.nome = nome;
@@ -30,7 +31,8 @@ public class Produto {
         this.preco_compra = 0;
         this.quantidade = 0;
     }
-    public Produto(int id,double preco_venda, double preco_compra, int qtd ) {
+
+    public Produto(int id, double preco_venda, double preco_compra, int qtd) {
         this.id = id;
         this.nome = "";
         this.preco_venda = preco_venda;
@@ -95,6 +97,7 @@ public class Produto {
         Produto produto = (Produto) o;
         return id == produto.id && Double.compare(produto.preco_venda, preco_venda) == 0 && Double.compare(produto.preco_compra, preco_compra) == 0 && quantidade == produto.quantidade && ultimoID == produto.ultimoID && Objects.equals(nome, produto.nome);
     }
+
     public Object clone() {
         Produto x = new Produto(this.id, this.nome, this.preco_venda, this.preco_compra);
         return x;

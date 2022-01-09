@@ -1,8 +1,9 @@
-
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class Pedido extends JFrame {
         setLocationRelativeTo(null);
 
         //Escrever  nas labels
-        nEmpregado.setText("Olá " + emp.getNome() + ". Está no "+ local.getNome() + ".");
+        nEmpregado.setText("Olá " + emp.getNome() + ". Está no " + local.getNome() + ".");
         lbQuantidade.setText("Quantidade");
         lbProduto.setText("Produto");
         lbPedidos.setText("Pedidos");
@@ -96,9 +97,8 @@ public class Pedido extends JFrame {
                 //Criar um maxqtd para ver se tem stock daquele produto que colocou juntamente se o colocou mais vezes
                 int Maxqtd = qtd;
                 for (Produto x : Ppedidos) {
-                    if (CbProdutos.getSelectedItem().equals(x.getNome()))
-                    {
-                    Maxqtd = x.getQuantidade()+qtd;
+                    if (CbProdutos.getSelectedItem().equals(x.getNome())) {
+                        Maxqtd = x.getQuantidade() + qtd;
                     }
                 }
                 tfQuantidade.setText("0");
@@ -112,8 +112,8 @@ public class Pedido extends JFrame {
                                 L = (Produto) p.clone();
                                 L.setQuantidade(Maxqtd);
                                 // SE JA EXISTIR UM PRODUTO IGUAL SOMA A QUANTIDADE A ESTE PRODUTO
-                                for (int u = 0; u<Ppedidos.size(); u++){
-                                    if(L.getNome().equals(Ppedidos.get(u).getNome())){
+                                for (int u = 0; u < Ppedidos.size(); u++) {
+                                    if (L.getNome().equals(Ppedidos.get(u).getNome())) {
                                         preco[0] = preco[0] - (Ppedidos.get(u).getQuantidade() * Ppedidos.get(u).getPreco_venda());
                                         Ppedidos.remove(u);
                                     }
@@ -146,34 +146,33 @@ public class Pedido extends JFrame {
         bTerminar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // SUBMETER O PEDIDO COM O IDLOCAL E EMPREGADO E ESTADO 0 POIS DEPOIS VAI PARA O PROCESSAMENTO
-                JOptionPane.showMessageDialog(null, "Tem de pagar: " + preco[0] + "€","Preço",JOptionPane.INFORMATION_MESSAGE );
+                JOptionPane.showMessageDialog(null, "Tem de pagar: " + preco[0] + "€", "Preço", JOptionPane.INFORMATION_MESSAGE);
                 Funcoes.setDataorDelete("", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
                         "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + local.getIdLocal() + ");"); //ONDE ESTA O 2 é para meter o do localZ
 
 
-                    // SUBMETER PARA O CONTEUDOPEDIDO COM OS DIFERENTES PRODUTOS
-                    for (Produto y : Ppedidos) {
+                // SUBMETER PARA O CONTEUDOPEDIDO COM OS DIFERENTES PRODUTOS
+                for (Produto y : Ppedidos) {
 
-                        try {
-                        int quantidade=0;
+                    try {
+                        int quantidade = 0;
                         Funcoes.setDataorDelete("", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida)\n" +
                                 "VALUES(" + ultimoId + ", " + y.getId() + ", " + y.quantidade + ", " + 0 + ");");
-                            //VER SE VOU RETIRAR AO ARMAZEM OU SE TIRO NA LOJA
-                            // ATRAVES DAQUELE QUE TEM QUANTIDADE
-                        ResultSet rs = Funcoes.getDataF("SELECT Quantidade FROM TblStock WHERE IDProduto=" + y.getId() + "AND IDLOCAL ="+ local.getIdLocal());
+                        //VER SE VOU RETIRAR AO ARMAZEM OU SE TIRO NA LOJA
+                        // ATRAVES DAQUELE QUE TEM QUANTIDADE
+                        ResultSet rs = Funcoes.getDataF("SELECT Quantidade FROM TblStock WHERE IDProduto=" + y.getId() + "AND IDLOCAL =" + local.getIdLocal());
                         if (rs.next()) {
                             quantidade = rs.getInt("Quantidade");
                         }
-                        if (quantidade>y.getQuantidade()){
+                        if (quantidade > y.getQuantidade()) {
                             quantidade -= y.getQuantidade();
                             Funcoes.setDataorDelete("",
                                     "Update TblStock\n"
                                             + "SET Quantidade=" + quantidade + ", "
                                             + "IDMedida = " + 1
-                                            + "\nWHERE IDProduto ="+ y.getId()
-                                            + "\nAND IDLocal = "+ local.getIdLocal());
-                        }
-                        else{
+                                            + "\nWHERE IDProduto =" + y.getId()
+                                            + "\nAND IDLocal = " + local.getIdLocal());
+                        } else {
                             quantidade = 0;
                             //vai ver a quantidade que esta no armazem
                             ResultSet rip = Funcoes.getDataF("Select S.Quantidade , C.ConversaoAPB\n" +
@@ -190,12 +189,12 @@ public class Pedido extends JFrame {
                                     "Update TblStock\n"
                                             + "SET Quantidade=" + quantidade + ", "
                                             + "IDMedida = 1"
-                                            + "\nWHERE IDProduto ="+ y.getId()
+                                            + "\nWHERE IDProduto =" + y.getId()
                                             + "\nAND IDLocal = 1");
                         }
-                    }                catch (SQLException x){
-                            JOptionPane.showMessageDialog(null, x, "Terminar Pedido", JOptionPane.ERROR_MESSAGE);
-                        }
+                    } catch (SQLException x) {
+                        JOptionPane.showMessageDialog(null, x, "Terminar Pedido", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
                 dispose();
                 Hub hub = new Hub(emp, local);
@@ -248,7 +247,7 @@ public class Pedido extends JFrame {
 
     public void criaTabela(ArrayList<Produto> Ppedidos) {
         Object[][] data = new Object[Ppedidos.size()][2];
-        String[] colunas = {"Produto", "Quantidade" };
+        String[] colunas = {"Produto", "Quantidade"};
         for (int i = 0; i < Ppedidos.size(); i++) {
             data[i][0] = Ppedidos.get(i).getNome();
             data[i][1] = Ppedidos.get(i).getQuantidade();

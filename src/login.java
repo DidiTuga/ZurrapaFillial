@@ -1,7 +1,10 @@
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class login extends JFrame {
@@ -36,11 +39,11 @@ public class login extends JFrame {
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-                Local l = new Local(rs.getInt("IDLocal"),rs.getString("Designacao"));
+                Local l = new Local(rs.getInt("IDLocal"), rs.getString("Designacao"));
                 Locais.add(l);
 
             }
-            for (int i = 0; i<Locais.size(); i++) {
+            for (int i = 0; i < Locais.size(); i++) {
                 cbLocal.addItem(Locais.get(i).getNome());
             }
 
@@ -55,8 +58,7 @@ public class login extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 cbLocal.getSelectedItem();
                 for (Local x : Locais) {
-                    if (cbLocal.getSelectedItem().equals(x.getNome()))
-                    {
+                    if (cbLocal.getSelectedItem().equals(x.getNome())) {
                         local = new Local(x.getIdLocal(), x.getNome());
                     }
                 }
@@ -71,10 +73,10 @@ public class login extends JFrame {
 
                     if (result.next()) {
                         Empregado empregadoAtual = new Empregado(result.getInt(4), result.getString(3));
-                        if(local.getIdLocal()==1){ // se ele selecionar o armazem aparece o menu armazem
+                        if (local.getIdLocal() == 1) { // se ele selecionar o armazem aparece o menu armazem
                             HubArmazem armazem = new HubArmazem(empregadoAtual);
                             dispose();
-                        }else { // se ele selecionar outro sem ser o armazem vai o outro
+                        } else { // se ele selecionar outro sem ser o armazem vai o outro
                             Hub hub_Gestao = new Hub(empregadoAtual, local);
                             dispose(); // Fecha Janela Atual
                         }
@@ -84,7 +86,7 @@ public class login extends JFrame {
 
                     connection.close(); // Fecha conecao com a base de dados
                 } catch (SQLException c) {
-                    JOptionPane.showMessageDialog(null, c, "ERROR",  JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, c, "ERROR", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,6 +17,7 @@ public class Funcoes {
         }
 
     }
+
     public static void setDataorDeleteS(String msg, String Query) {
         try {
             Connection con = Conectar.getConSede();
@@ -43,6 +43,7 @@ public class Funcoes {
             return null;
         }
     }
+
     public static ResultSet getDataS(String query) {
         try {
             Connection con = Conectar.getConSede();
