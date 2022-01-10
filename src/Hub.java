@@ -67,8 +67,9 @@ public class Hub extends JFrame {
 
                             if (JOptionPane.showConfirmDialog(null, "Tem a certeza que quer fechar caixa?", "Fechar Caixa",
                                     JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                                int idpedido= 0;
                                 // FEcho loja
-                                ResultSet rip = Funcoes.getDataF("Select pr.IDProduto, Quantidade_Pedida, pr.Preco_Compra, pr.Preco_Venda \n" +
+                                ResultSet rip = Funcoes.getDataF("Select p.IDPedido, pr.IDProduto, Quantidade_Pedida, pr.Preco_Compra, pr.Preco_Venda \n" +
                                         "From TblPedido p, TblConteudoPedido cp, TblProduto pr\n" +
                                         "WHERE p.IDPedido = cp.IDPedido\n" +
                                         "and IDLocal = " + local.getIdLocal() +
@@ -76,13 +77,13 @@ public class Hub extends JFrame {
                                 while (rip.next()) { //Vai ver quando gastos e ganhos houve
                                     totalganhos += rip.getInt("Quantidade_Pedida") * rip.getDouble("Preco_Venda");
                                     totalgastos += rip.getInt("Quantidade_Pedida") * rip.getDouble("Preco_Compra");
+                                    idpedido = rip.getInt("IDPedido");
+                                    Funcoes.setDataorDelete("", "DELETE From TblConteudoPedido WHERE IDPedido = " + idpedido +
+                                            "\nDELETE FROM TblPedido WHERE IDPedido =" + idpedido);
                                 }
                                 //Manda os dados para a tabela
-                                String query = "INSERT INTO TblFilialDiaBar(DataDia, Lucro, Despesa, IDBar, IDFilial)\n Values(GETDATE(), " + totalganhos + ", " + totalgastos + ", " + local.getIdLocal() + ", 1);";
-                                Funcoes.setDataorDeleteS("", query);
-                                //APAGAR TUDO
-                                Funcoes.setDataorDelete("Caixa Fechada com Sucesso!", "DELETE From TblConteudoPedido\n" +
-                                        "DELETE FROM TblPedido");
+                                String query = "INSERT INTO TblFilialDiaBar(DataDia, Lucro, Despesa, IDBar, IDFilial)\n Values(GETDATE(), " + totalganhos + ", " + totalgastos + ", " + local.getIdLocal() + ", "+login.FilialIdentification+");";
+                                Funcoes.setDataorDeleteS("Caixa Fechada com Sucesso!", query);
                             }
                         }
                     } else {
@@ -98,7 +99,7 @@ public class Hub extends JFrame {
         bSair.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                login inicio = new login();
+                login inicio = new login(login.FilialIdentification);
             }
         });
 

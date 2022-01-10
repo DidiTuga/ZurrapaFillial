@@ -18,9 +18,10 @@ public class login extends JFrame {
     private JComboBox<String> cbLocal;
     private JLabel lbNome;
     private Local local;
+    public static String FilialIdentification;
 
 
-    public login() {
+    public login(String filialIdentification) {
         //----- Definicoes da Janela -----
         setContentPane(window);                                  // Coloca a janela, como ativa
         setTitle("Bem-Vindo à Zurrapa Filial");                  // Define titulo
@@ -28,15 +29,14 @@ public class login extends JFrame {
         setResizable(false);                                     // Define alteracao de tamanho
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); // Define fechar tudo ao fechar a janela
         setLocationRelativeTo(null);
-
+        FilialIdentification = filialIdentification;
         ArrayList<Local> Locais = new ArrayList<>();
 
         //Colocar os produtos que existem no combobox
         try {
             //ir buscar os produtos para os adicionar no combobox
-            String sql = "SELECT * From TblLocal";
-            PreparedStatement pst = Conectar.getCon().prepareStatement(sql);
-            ResultSet rs = pst.executeQuery();
+
+            ResultSet rs = Funcoes.getDataF("SELECT * From TblLocal");
 
             while (rs.next()) {
                 Local l = new Local(rs.getInt("IDLocal"), rs.getString("Designacao"));
@@ -65,7 +65,7 @@ public class login extends JFrame {
                 try { // Validar utilizador e palavrapasse
 
                     String query = "Select Username, Palavra_passe, Nome, IDEmpregado from TblEmpregado Where Username = ? and Palavra_Passe= ?";
-                    Connection connection = Conectar.getCon(); // Cria conecao com a base de dados
+                    Connection connection = Conectar.getCon("ZurrapaFilial" + filialIdentification); // Cria conecao com a base de dados
                     PreparedStatement pst = connection.prepareStatement(query);
                     pst.setString(1, usernameField.getText());
                     pst.setString(2, String.valueOf(passwordField.getPassword()));

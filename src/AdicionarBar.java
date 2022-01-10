@@ -23,7 +23,7 @@ public class AdicionarBar extends JFrame {
     private JButton sairButton;
     private JScrollPane JSPTabela;
     private DefaultTableModel model;
-
+    private ArrayList<Stock> stocks;
     public AdicionarBar(Empregado emp) {
         //Definir janela
         setContentPane(Painel);
@@ -38,7 +38,7 @@ public class AdicionarBar extends JFrame {
         ArrayList<Produto> produtos = veProduto();
         ArrayList<Local> locais = veLocal();
         //vai buscar os produtos do bar selecionado
-        ArrayList<Stock> stocks = veStock(verificaLocal(locais).getIdLocal());
+        stocks = veStock(verificaLocal(locais).getIdLocal());
 
         //STOCKS DO ARMAZEM
         final ArrayList<Stock>[] stocksA = new ArrayList[]{veStock(1)};
@@ -64,6 +64,7 @@ public class AdicionarBar extends JFrame {
         //Quando mudam o local é preciso atualizar a tabela
         cbLocal.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                stocks = veStock(verificaLocal(locais).getIdLocal());
                 criaTabela(stocks);
             }
         });
@@ -157,7 +158,7 @@ public class AdicionarBar extends JFrame {
         //Colocar os produtos que existem no combobox
         try {
             //ir buscar os produtos para os adicionar no combobox
-            ResultSet rs = Funcoes.getDataF("SELECT * From TblLocal WHERE IDLocal > 1");
+            ResultSet rs = Funcoes.getDataF("SELECT * From TblLocal WHERE IDTipoLocal = 2");
 
             while (rs.next()) {
                 Local p = new Local(rs.getInt("IDLocal"), rs.getString("Designacao"));

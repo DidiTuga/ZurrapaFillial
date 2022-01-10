@@ -6,7 +6,7 @@ import java.util.Random;
 public class Funcoes {
     public static void setDataorDelete(String msg, String Query) {
         try {
-            Connection con = Conectar.getCon();
+            Connection con = Conectar.getCon("ZurrapaFilial"+ login.FilialIdentification);;
             PreparedStatement pst = con.prepareStatement(Query);
             int rs = pst.executeUpdate();
             if (!msg.equals("")) {
@@ -34,7 +34,7 @@ public class Funcoes {
 
     public static ResultSet getDataF(String query) {
         try {
-            Connection con = Conectar.getCon();
+            Connection con = Conectar.getCon("ZurrapaFilial"+ login.FilialIdentification);
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(query);
             return rs;

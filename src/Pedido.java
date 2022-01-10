@@ -146,59 +146,63 @@ public class Pedido extends JFrame {
         bTerminar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // SUBMETER O PEDIDO COM O IDLOCAL E EMPREGADO E ESTADO 0 POIS DEPOIS VAI PARA O PROCESSAMENTO
-                JOptionPane.showMessageDialog(null, "Tem de pagar: " + preco[0] + "€", "Preço", JOptionPane.INFORMATION_MESSAGE);
-                Funcoes.setDataorDelete("", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
-                        "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + local.getIdLocal() + ");"); //ONDE ESTA O 2 é para meter o do localZ
+                if (preco[0] <= 0) {
+                    JOptionPane.showMessageDialog(null, "Para ter um pedido tem de consumir!", "Cuidado preço vazio", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Tem de pagar: " + preco[0] + "€", "Preço", JOptionPane.INFORMATION_MESSAGE);
+                    Funcoes.setDataorDelete("", "INSERT INTO TblPedido(IDPedido, Estado, IDEmpregado, IDLocal)\n" +
+                            "VALUES(" + ultimoId + ", " + 0 + ", " + emp.getId() + ", " + local.getIdLocal() + ");"); //ONDE ESTA O 2 é para meter o do localZ
 
 
-                // SUBMETER PARA O CONTEUDOPEDIDO COM OS DIFERENTES PRODUTOS
-                for (Produto y : Ppedidos) {
+                    // SUBMETER PARA O CONTEUDOPEDIDO COM OS DIFERENTES PRODUTOS
+                    for (Produto y : Ppedidos) {
 
-                    try {
-                        int quantidade = 0;
-                        Funcoes.setDataorDelete("", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida)\n" +
-                                "VALUES(" + ultimoId + ", " + y.getId() + ", " + y.quantidade + ", " + 0 + ");");
-                        //VER SE VOU RETIRAR AO ARMAZEM OU SE TIRO NA LOJA
-                        // ATRAVES DAQUELE QUE TEM QUANTIDADE
-                        ResultSet rs = Funcoes.getDataF("SELECT Quantidade FROM TblStock WHERE IDProduto=" + y.getId() + "AND IDLOCAL =" + local.getIdLocal());
-                        if (rs.next()) {
-                            quantidade = rs.getInt("Quantidade");
-                        }
-                        if (quantidade > y.getQuantidade()) {
-                            quantidade -= y.getQuantidade();
-                            Funcoes.setDataorDelete("",
-                                    "Update TblStock\n"
-                                            + "SET Quantidade=" + quantidade + ", "
-                                            + "IDMedida = " + 1
-                                            + "\nWHERE IDProduto =" + y.getId()
-                                            + "\nAND IDLocal = " + local.getIdLocal());
-                        } else {
-                            quantidade = 0;
-                            //vai ver a quantidade que esta no armazem
-                            ResultSet rip = Funcoes.getDataF("Select S.Quantidade , C.ConversaoAPB\n" +
-                                    "From TblStock S, TblConversao C, TblMedida M\n" +
-                                    "Where S.IDProduto = " + y.getId() + " \n" +
-                                    "and S.IDLocal = 1 \n" +
-                                    "and S.IDMedida = M.IDMedida \n" +
-                                    "and C.IDMedidaA = S.IDMedida ");
-                            if (rip.next()) { //Multiplica e assim retira do armazem
-                                quantidade = (rip.getInt("Quantidade") * rip.getInt("ConversaoAPB"));
+                        try {
+                            int quantidade = 0;
+                            Funcoes.setDataorDelete("", "INSERT INTO TblConteudoPedido(IDPedido, IDProduto, Quantidade_Pedida, Quantidade_Servida)\n" +
+                                    "VALUES(" + ultimoId + ", " + y.getId() + ", " + y.quantidade + ", " + 0 + ");");
+                            //VER SE VOU RETIRAR AO ARMAZEM OU SE TIRO NA LOJA
+                            // ATRAVES DAQUELE QUE TEM QUANTIDADE
+                            ResultSet rs = Funcoes.getDataF("SELECT Quantidade FROM TblStock WHERE IDProduto=" + y.getId() + "AND IDLOCAL =" + local.getIdLocal());
+                            if (rs.next()) {
+                                quantidade = rs.getInt("Quantidade");
                             }
-                            quantidade -= y.getQuantidade();
-                            Funcoes.setDataorDelete("",
-                                    "Update TblStock\n"
-                                            + "SET Quantidade=" + quantidade + ", "
-                                            + "IDMedida = 1"
-                                            + "\nWHERE IDProduto =" + y.getId()
-                                            + "\nAND IDLocal = 1");
+                            if (quantidade > y.getQuantidade()) {
+                                quantidade -= y.getQuantidade();
+                                Funcoes.setDataorDelete("",
+                                        "Update TblStock\n"
+                                                + "SET Quantidade=" + quantidade + ", "
+                                                + "IDMedida = " + 1
+                                                + "\nWHERE IDProduto =" + y.getId()
+                                                + "\nAND IDLocal = " + local.getIdLocal());
+                            } else {
+                                quantidade = 0;
+                                //vai ver a quantidade que esta no armazem
+                                ResultSet rip = Funcoes.getDataF("Select S.Quantidade , C.ConversaoAPB\n" +
+                                        "From TblStock S, TblConversao C, TblMedida M\n" +
+                                        "Where S.IDProduto = " + y.getId() + " \n" +
+                                        "and S.IDLocal = 1 \n" +
+                                        "and S.IDMedida = M.IDMedida \n" +
+                                        "and C.IDMedidaA = S.IDMedida ");
+                                if (rip.next()) { //Multiplica e assim retira do armazem
+                                    quantidade = (rip.getInt("Quantidade") * rip.getInt("ConversaoAPB"));
+                                }
+                                quantidade -= y.getQuantidade();
+                                Funcoes.setDataorDelete("",
+                                        "Update TblStock\n"
+                                                + "SET Quantidade=" + quantidade + ", "
+                                                + "IDMedida = 1"
+                                                + "\nWHERE IDProduto =" + y.getId()
+                                                + "\nAND IDLocal = 1");
+                            }
+                        } catch (SQLException x) {
+                            JOptionPane.showMessageDialog(null, x, "Terminar Pedido", JOptionPane.ERROR_MESSAGE);
                         }
-                    } catch (SQLException x) {
-                        JOptionPane.showMessageDialog(null, x, "Terminar Pedido", JOptionPane.ERROR_MESSAGE);
                     }
+                    dispose();
+                    Hub hub = new Hub(emp, local);
+                    hub.setLocationRelativeTo(null);
                 }
-                dispose();
-                Hub hub = new Hub(emp, local);
-                hub.setLocationRelativeTo(null);
             }
         });
 
@@ -206,7 +210,7 @@ public class Pedido extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 int index = Pedidos.getSelectedRow();
-                if (JOptionPane.showConfirmDialog(null, "Não consegues editar esta linha, queres eliminar esta linha?", "Editar Pedido",
+                if (JOptionPane.showConfirmDialog(null, "Deseja remover este produto?", "Editar Pedido",
                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
                     //Se sim
                     preco[0] = preco[0] - (Ppedidos.get(index).getQuantidade() * Ppedidos.get(index).getPreco_venda());

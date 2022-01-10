@@ -29,7 +29,7 @@ public class TratarPedido extends JFrame {
         //Definir janela
         setContentPane(painel);
         setTitle("Tratar de Pedidos");
-        setSize(600, 500);
+        setSize(700, 500);
         setResizable(false);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

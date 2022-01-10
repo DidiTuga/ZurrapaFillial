@@ -47,7 +47,7 @@ public class HubArmazem extends JFrame {
         btSair.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                login login = new login();
+                login inicio = new login(login.FilialIdentification);
             }
         });
 
