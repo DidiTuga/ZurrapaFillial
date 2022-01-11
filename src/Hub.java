@@ -3,6 +3,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Hub extends JFrame {
     private JButton bPedido;
@@ -43,7 +45,7 @@ public class Hub extends JFrame {
         // Só o empregado com o idnolocal que pode fechar caixa
         bFCaixa.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int id = -1;
+                int id = -1; // Vai ser o id do empregado responsavel
                 double totalganhos = 0;
                 double totalgastos = 0;
                 try {
@@ -52,12 +54,13 @@ public class Hub extends JFrame {
                         id = rs.getInt("IDEmpregado");
                     }
 
-                    if (id == emp.getId()) {
+                    if (id == emp.getId()) { // verificar se os pedidos estao fechados
                         int verifica = 0;
-                        ResultSet rsd = Funcoes.getDataF("Select * From TblPedido");
+                        ResultSet rsd = Funcoes.getDataF("Select * From TblPedido WHERE IDLocal ="+ local.getIdLocal());
                         while (rsd.next()) {
                             if (rsd.getInt("Estado") != 1) {
                                 verifica = 1;
+                                break;
                             }
                         }
                         if (verifica == 1) {
@@ -84,6 +87,24 @@ public class Hub extends JFrame {
                                 //Manda os dados para a tabela
                                 String query = "INSERT INTO TblFilialDiaBar(DataDia, Lucro, Despesa, IDBar, IDFilial)\n Values(GETDATE(), " + totalganhos + ", " + totalgastos + ", " + local.getIdLocal() + ", "+login.FilialIdentification+");";
                                 Funcoes.setDataorDeleteS("Caixa Fechada com Sucesso!", query);
+
+                                // SELECT * FROM TblFillialDia WHERE Data = GETDATE()
+                                LocalDate now =LocalDate.now();
+                                ResultSet xd = Funcoes.getDataS("SELECT * FROM TblFilialDia WHERE DataDia = '"+ now + "' AND IDFilial = "+login.FilialIdentification);
+                                if (xd != null){
+                                    xd.next();
+                                    double tmpTGanho = 0;
+                                    double tmpTGasto = 0;
+                                    tmpTGanho = xd.getDouble("TotalGanho") + totalganhos;
+                                    tmpTGasto = xd.getDouble("TotalGasto") + totalgastos;
+                                    Funcoes.setDataorDeleteS("", "Update TblFilialDia\n SET TotalGanho =" + tmpTGanho + ",\n TotalGasto ="+tmpTGasto + "\nWHERE DataDia ='"+ now +"' AND IDFilial ="+login.FilialIdentification);
+                                }else{
+                                Funcoes.setDataorDeleteS("", "INSERT INTO TblFilialDia\n Values(GETDATE(), " + totalganhos + ", " + totalgastos + ", "+login.FilialIdentification+");");
+                                }
+
+
+
+
                             }
                         }
                     } else {

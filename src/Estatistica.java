@@ -15,7 +15,7 @@ public class Estatistica extends JFrame {
     private JLabel lbGastos;
     private JLabel lbGanhos;
     private JLabel lbGasto;
-
+    private ArrayList<barEuros> datas;
     public Estatistica() {
         setContentPane(painel);
         setTitle("Estatisticas");
@@ -24,7 +24,7 @@ public class Estatistica extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE); //clicar no x para fechar
         //Inicialiar variaveis/texto
         ArrayList<Local> locais = veLocal();
-        ArrayList<barEuros> datas = veData(locais);
+        datas = veData(locais);
         //meter janela visivel
         atualizaValores(datas, locais);
         setLocationRelativeTo(null);
@@ -35,6 +35,7 @@ public class Estatistica extends JFrame {
         // tenho que atualizar a informação
         cbBar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                datas = veData(locais);
                 atualizaValores(datas, locais);
 
 
@@ -119,7 +120,8 @@ public class Estatistica extends JFrame {
         //Colocar as que existem no combobox
         try {
             //IR BUSCAR A SITUACAO CORRENTE
-            cbData.addItem("Situação Corrente");
+            JComboBox<String> cb = new JComboBox<>();
+            cb.addItem("Situação Corrente");
             for (Local l : locais) {
                 double preçocusto = 0;
                 ResultSet rsd = Funcoes.getDataF("Select s.Quantidade, p.IDProduto, P.Preco_Compra, c.ConversaoAPB\n" +
@@ -135,17 +137,23 @@ public class Estatistica extends JFrame {
                 datas.add(b);
             }
 
-
+            int idlocal = 0;
             //ir buscar as datas para as adicionar no combobox
-            ResultSet rs = Funcoes.getDataS("SELECT * From TblFilialDiaBar WHERE IDFilial = 1"); //pois este bar é a fillial 1
+            for (Local d : locais){
+                if (cbBar.getSelectedItem().equals(d.getNome())){
+                    idlocal = d.getIdLocal();
+                    break;
+                }
+            }
+            ResultSet rs = Funcoes.getDataS("SELECT * From TblFilialDiaBar WHERE IDFilial = "+login.FilialIdentification +  "AND IDBar = "+ idlocal); //pois este bar é a fillial 1
 
             while (rs.next()) {
                 barEuros x = new barEuros(rs.getString("DataDia"), rs.getInt("IDBar"), rs.getDouble("Lucro"), rs.getDouble("Despesa"));
                 datas.add(x);
 
-                cbData.addItem(x.getData());
+                cb.addItem(x.getData());
             }
-
+            cbData.setModel(cb.getModel());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e, "A ir buscar datas", JOptionPane.ERROR_MESSAGE);
         }
