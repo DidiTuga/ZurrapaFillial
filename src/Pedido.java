@@ -232,7 +232,7 @@ public class Pedido extends JFrame {
                 ultimoId = rs.getInt("") + 1;
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(null, e, "PEdido - AtualizaID", JOptionPane.ERROR_MESSAGE);
+            ultimoId = 1;
 
         }
     }
