@@ -91,8 +91,7 @@ public class Hub extends JFrame {
                                 // SELECT * FROM TblFillialDia WHERE Data = GETDATE()
                                 LocalDate now =LocalDate.now();
                                 ResultSet xd = Funcoes.getDataS("SELECT * FROM TblFilialDia WHERE DataDia = '"+ now + "' AND IDFilial = "+login.FilialIdentification);
-                                if (xd != null){
-                                    xd.next();
+                                if (xd.next()){ // tem que ser assim que depois se for diferente de null entra sempre no if
                                     double tmpTGanho = 0;
                                     double tmpTGasto = 0;
                                     tmpTGanho = xd.getDouble("TotalGanho") + totalganhos;
